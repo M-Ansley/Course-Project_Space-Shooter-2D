@@ -9,9 +9,7 @@ public class Laser : MonoBehaviour
 
     [SerializeField]
     private float maxYVal = 8;
-
-
-
+        
     private void Start()
     {
         StartCoroutine(MoveUntil());
