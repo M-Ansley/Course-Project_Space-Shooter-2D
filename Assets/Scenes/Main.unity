@@ -311,6 +311,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _multiplier: 7
+  _laserPrefab: {fileID: 5560930463805984600, guid: 9000c70e993b13742bb4bc5518fd4231,
+    type: 3}
 --- !u!1 &2133343086
 GameObject:
   m_ObjectHideFlags: 0
