@@ -22,6 +22,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private float _fireRate = 0.5f;
     private float _nextFire = 0;
 
+    [Header("Health")]
+    [SerializeField]
+    private int _lives = 3;
+
     void Start()
     {
         transform.position = new Vector3(0, 0, 0);
@@ -81,6 +85,18 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         _nextFire = Time.time + _fireRate;
         Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y + 0.8f, transform.position.z);
         Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
+    }
+
+    // *******************************************************************************************
+    // HEALTH
+
+    public void DamagePlayer()
+    {
+        _lives--;
+        if (_lives < 1)
+        {
+            Destroy(this.gameObject);
+        }
     }
 }
 
