@@ -83,7 +83,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private void FireLaser()
     {
         _nextFire = Time.time + _fireRate;
-        Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y + 0.8f, transform.position.z);
+        Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y + 1.25f, transform.position.z);
         Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
     }
 
