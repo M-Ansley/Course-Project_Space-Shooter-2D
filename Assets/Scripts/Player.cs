@@ -17,7 +17,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     [Header("Shooting")]
     [SerializeField]
-    private GameObject _laserPrefab;
+    private GameObject _laserPrefab = null;
     [SerializeField]
     private float _fireRate = 0.5f;
     private float _nextFire = 0;
@@ -95,6 +95,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         _lives--;
         if (_lives < 1)
         {
+            GameEvents.current.PlayerDied();
             Destroy(this.gameObject);
         }
     }

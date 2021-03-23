@@ -32,7 +32,7 @@ public class Enemy : MonoBehaviour
 
     private void RespawnAtTop()
     {
-        float randomXPos = Random.Range(-11, 11);
+        float randomXPos = Random.Range(_minXVal, _maxXVal);
         transform.position = new Vector3(randomXPos, _startingYVal, 0);
     }
 
@@ -44,6 +44,7 @@ public class Enemy : MonoBehaviour
             Player player = other.transform.GetComponent<Player>();
             if (player != null)
             {
+                print(gameObject.name);
             other.GetComponent<Player>().DamagePlayer();
             }
             Destroy(this.gameObject);
