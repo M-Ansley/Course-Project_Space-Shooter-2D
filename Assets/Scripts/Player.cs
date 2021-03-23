@@ -85,6 +85,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         _nextFire = Time.time + _fireRate;
         Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y + 1.25f, transform.position.z);
         Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
+        FindObjectOfType<AudioManager>().Play("Laser");
     }
 
     // *******************************************************************************************
@@ -96,6 +97,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         if (_lives < 1)
         {
             GameEvents.current.PlayerDied();
+            FindObjectOfType<AudioManager>().Play("Explosion");
             Destroy(this.gameObject);
         }
     }

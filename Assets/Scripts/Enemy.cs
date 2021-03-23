@@ -10,8 +10,8 @@ public class Enemy : MonoBehaviour
     private float _startingYVal = 7;
     private float _yMinVal = -6;
 
-    private float _minXVal = -11;
-    private float _maxXVal = 11;
+    private float _minXVal = -10;
+    private float _maxXVal = 10;
 
     // Start is called before the first frame update
     void Start()
@@ -45,15 +45,17 @@ public class Enemy : MonoBehaviour
             if (player != null)
             {
                 print(gameObject.name);
-            other.GetComponent<Player>().DamagePlayer();
+                other.GetComponent<Player>().DamagePlayer();
             }
+            FindObjectOfType<AudioManager>().Play("Explosion");
             Destroy(this.gameObject);
         }
         else if (other.CompareTag("Laser"))
         {
             Destroy(other.gameObject);
+            FindObjectOfType<AudioManager>().Play("Explosion");
             Destroy(this.gameObject);
-        }        
+        }
     }
 }
 
