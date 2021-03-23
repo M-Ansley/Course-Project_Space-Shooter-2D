@@ -24,4 +24,20 @@ public class GameEvents : MonoBehaviour
         Debug.Log("The player has died to death");
     }
 
+    public MyStringEvent powerupCollected;
+
+    [System.Serializable]
+    public class MyStringEvent : UnityEvent<string>
+    {
+
+    }
+
+    public void PowerupCollected(string powerupName)
+    {
+        if (powerupCollected != null)
+        {
+            powerupCollected.Invoke(powerupName);
+        }
+    }
+
 }

@@ -9,7 +9,7 @@ public class Laser : MonoBehaviour
 
     [SerializeField]
     private float maxYVal = 8;
-        
+
     private void Start()
     {
         StartCoroutine(MoveUntil());
@@ -22,7 +22,15 @@ public class Laser : MonoBehaviour
             transform.Translate(Vector3.up * _multiplier * Time.deltaTime);
             yield return null;
         }
-        Destroy(gameObject);
+
+        if (gameObject.transform.parent != null)
+        {
+            Destroy(gameObject.transform.parent.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }
 

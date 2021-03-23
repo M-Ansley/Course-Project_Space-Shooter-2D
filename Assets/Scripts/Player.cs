@@ -6,6 +6,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 {
     // public or private. If private, only this class knows it exists.
     // data types. Key data types (int, float, bool, string)
+    [Header("Health")]
+    [SerializeField]
+    private int _lives = 3;
 
     [Header("Movement")]
     [SerializeField]
@@ -22,12 +25,15 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private float _fireRate = 0.5f;
     private float _nextFire = 0;
 
-    [Header("Health")]
     [SerializeField]
-    private int _lives = 3;
+    private GameObject _tripleShotPrefab = null;
+    [SerializeField]
+    private bool _tripleShotActive = false;
+
 
     void Start()
     {
+        ListenToEvents();
         transform.position = new Vector3(0, 0, 0);
     }
 
@@ -83,8 +89,19 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private void FireLaser()
     {
         _nextFire = Time.time + _fireRate;
-        Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y + 1.25f, transform.position.z);
-        Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
+        if (!_tripleShotActive)
+        {
+            Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y + 1.25f, transform.position.z);
+            Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
+        }
+        else
+        {
+            Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y + 0.3f, transform.position.z);
+            Instantiate(_tripleShotPrefab, positionOffset, Quaternion.identity);
+
+            // GameObject tripleShotInstance = Instantiate(_tripleShotPrefab, positionOffset, Quaternion.identity);
+            // Destroy(tripleShotInstance, 2f);
+        }
         FindObjectOfType<AudioManager>().Play("Laser");
     }
 
@@ -100,6 +117,54 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
             FindObjectOfType<AudioManager>().Play("Explosion");
             Destroy(this.gameObject);
         }
+    }
+
+    // *******************************************************************************************
+    // POWERUPS
+    public void PowerupCollected(string powerupName)
+    {
+        Debug.Log(powerupName + " collected");
+        switch (powerupName)
+        {
+            case "Triple_Shot":
+                TripleShotActive();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void TripleShotActive()
+    {
+        _tripleShotActive = true;
+        StartCoroutine(TripleShotPowerDownRoutine(5f));
+    }
+
+    IEnumerator TripleShotPowerDownRoutine(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        _tripleShotActive = false;
+    }
+
+    // *******************************************************************************************
+    // EVENTS
+
+    private void ListenToEvents()
+    {
+        GameEvents.current.powerupCollected.AddListener(PowerupCollected);
+    }
+
+    private void UnlistenToEvents()
+    {
+        GameEvents.current.powerupCollected.RemoveListener(PowerupCollected);
+    }
+
+    // ********************************************************************************************
+    // MISC
+
+    private void OnDestroy()
+    {
+        UnlistenToEvents();
     }
 }
 
