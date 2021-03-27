@@ -13,7 +13,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     [Header("Movement")]
     [SerializeField]
     private float _speed = 3.5f;
-    private float _speedMultiplier = 2f;
+    private float _speedMultiplier = 1.5f;
 
 
     private float _xClamping = 12;
@@ -29,12 +29,18 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     [SerializeField]
     private GameObject _tripleShotPrefab = null;
+
+    [Header("Shield")]
+    [SerializeField]
+    private GameObject _shieldVisual = null;
    
     private bool _tripleShotActive = false;
     private bool _speedActive = false;
+    private bool _shieldActive = false;
 
     void Start()
     {
+        _shieldVisual.SetActive(false);
         ListenToEvents();
         transform.position = new Vector3(0, 0, 0);
     }
@@ -112,6 +118,13 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     public void DamagePlayer()
     {
+        if (_shieldActive)
+        {
+            _shieldVisual.SetActive(false);
+            _shieldActive = false;
+            return; // will break us out of the method we're currently in. 
+        }
+
         _lives--;
         if (_lives < 1)
         {
@@ -126,6 +139,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     public void PowerupCollected(string powerupName)
     {
         Debug.Log(powerupName + " collected");
+        FindObjectOfType<AudioManager>().Play("Power-Up");
         switch (powerupName)
         {
             case "Triple_Shot":
@@ -135,6 +149,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
                 SpeedActive();
                 break;
             case "Shield":
+                ShieldActive();
                 break;
             default:
                 break;
@@ -167,6 +182,33 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         yield return new WaitForSecondsRealtime(delay);
         _speed /= _speedMultiplier;
         _speedActive = false;
+    }
+
+
+    private void ShieldActive()
+    {
+        if (!_shieldActive)
+        {
+        _shieldActive = true;
+        StartCoroutine(ShieldExpand(0.5f));
+        _shieldVisual.SetActive(true);
+        }
+    }
+
+    IEnumerator ShieldExpand(float duration)
+    {
+        Vector3 desiredScale = _shieldVisual.transform.localScale;
+        _shieldVisual.transform.localScale = new Vector3(0, 0, 0);
+        Vector3 startingScale = _shieldVisual.transform.localScale;
+
+        float elapsedTime = 0;
+
+        while (_shieldVisual.transform.localScale != desiredScale)
+        {
+            _shieldVisual.transform.localScale = Vector3.Lerp(startingScale, desiredScale, (elapsedTime/duration));
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
     }
 
 
