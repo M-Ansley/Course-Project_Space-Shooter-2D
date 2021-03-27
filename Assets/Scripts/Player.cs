@@ -12,7 +12,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     [Header("Movement")]
     [SerializeField]
-    private float _multiplier = 3.5f;
+    private float _speed = 3.5f;
+    private float _speedMultiplier = 2f;
+
 
     private float _xClamping = 12;
     private float _yMaxVal = 0;
@@ -27,9 +29,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     [SerializeField]
     private GameObject _tripleShotPrefab = null;
-    [SerializeField]
+   
     private bool _tripleShotActive = false;
-
+    private bool _speedActive = false;
 
     void Start()
     {
@@ -58,7 +60,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-        transform.Translate(direction * _multiplier * Time.deltaTime);
+        transform.Translate(direction * _speed * Time.deltaTime);
     }
 
     private void Clamping()
@@ -129,11 +131,17 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
             case "Triple_Shot":
                 TripleShotActive();
                 break;
+            case "Speed":
+                SpeedActive();
+                break;
+            case "Shield":
+                break;
             default:
                 break;
         }
     }
 
+    // TRIPLE SHOT
     private void TripleShotActive()
     {
         _tripleShotActive = true;
@@ -145,6 +153,22 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         yield return new WaitForSecondsRealtime(delay);
         _tripleShotActive = false;
     }
+
+    // SPEED
+    private void SpeedActive()
+    {
+        _speedActive = true;
+        _speed *= _speedMultiplier; // double the movement speed
+        StartCoroutine(SpeedPowerDownRoutine(5f));
+    }
+
+    IEnumerator SpeedPowerDownRoutine(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        _speed /= _speedMultiplier;
+        _speedActive = false;
+    }
+
 
     // *******************************************************************************************
     // EVENTS

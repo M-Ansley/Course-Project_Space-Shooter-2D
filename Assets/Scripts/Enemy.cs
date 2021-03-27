@@ -19,6 +19,10 @@ public class Enemy : MonoBehaviour
         RespawnAtTop();
     }
 
+   // private void
+        
+    
+
     // Update is called once per frame
     void Update()
     {

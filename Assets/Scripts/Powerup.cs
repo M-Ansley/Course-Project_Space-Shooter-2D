@@ -4,8 +4,18 @@ using UnityEngine;
 
 public class Powerup : MonoBehaviour
 {
+    [SerializeField]
     private float _multiplier = 3;
     private float _yMinVal = -6;
+
+    public enum PowerupType
+    {
+        Triple_Shot,
+        Speed,
+        Shield
+    }
+
+    public PowerupType powerupType;
 
     // Update is called once per frame
     void Update()
@@ -21,8 +31,27 @@ public class Powerup : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            GameEvents.current.PowerupCollected("Triple_Shot");
+            PowerupLogic();            
             Destroy(gameObject);
+        }
+    }
+
+    private void PowerupLogic()
+    {
+        switch (powerupType)
+        {
+            case PowerupType.Triple_Shot:
+                GameEvents.current.PowerupCollected("Triple_Shot");
+                break;
+            case PowerupType.Speed:
+                GameEvents.current.PowerupCollected("Speed");
+                break;
+            case PowerupType.Shield:
+                GameEvents.current.PowerupCollected("Shield");
+                break;
+            default:
+                Debug.LogWarning("Case not recognised");
+                break;
         }
     }
 }
