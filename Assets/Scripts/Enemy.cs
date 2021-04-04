@@ -51,15 +51,20 @@ public class Enemy : MonoBehaviour
                 print(gameObject.name);
                 other.GetComponent<Player>().DamagePlayer();
             }
-            FindObjectOfType<AudioManager>().Play("Explosion");
-            Destroy(this.gameObject);
+            DestroySelf();
         }
         else if (other.CompareTag("Laser"))
         {
             Destroy(other.gameObject);
-            FindObjectOfType<AudioManager>().Play("Explosion");
-            Destroy(this.gameObject);
+            DestroySelf();
         }
+    }
+
+    private void DestroySelf()
+    {
+        FindObjectOfType<AudioManager>().Play("Explosion");
+        GameEvents.current.EnemyDestroyed();
+        Destroy(this.gameObject);
     }
 }
 

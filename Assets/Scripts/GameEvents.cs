@@ -8,6 +8,9 @@ public class GameEvents : MonoBehaviour
 {
     public static GameEvents current;
 
+    [SerializeField]
+    private ScreenShake _screenShake;
+
     private void Awake()
     {
         current = this;
@@ -37,6 +40,17 @@ public class GameEvents : MonoBehaviour
         if (powerupCollected != null)
         {
             powerupCollected.Invoke(powerupName);
+        }
+    }
+
+    public event Action enemyDestroyed;
+
+    public void EnemyDestroyed()
+    {
+        _screenShake.TriggerShake(0.03f, 0.25f);
+        if (enemyDestroyed != null)
+        {
+            enemyDestroyed();
         }
     }
 
