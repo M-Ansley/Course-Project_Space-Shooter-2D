@@ -16,6 +16,16 @@ public class GameEvents : MonoBehaviour
         current = this;
     }
 
+    public event Action playerDamaged;
+
+    public void PlayerDamaged()
+    {
+        if (playerDamaged != null)
+        {
+            playerDamaged();
+        }
+    }
+
     public event Action playerDied;
 
     public void PlayerDied()

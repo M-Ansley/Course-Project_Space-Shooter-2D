@@ -6,15 +6,19 @@ using TMPro;
 public class DeathDisplay : MonoBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI deathDisplayText = null;
+    private TextMeshProUGUI _deathDisplayText = null;
 
-    private string displayText = "YOU DIED";
+    [SerializeField]
+    private float _flickerDelay = 0.75f;
+    
+    [SerializeField]
+    private string _displayText = "YOU DIED";
 
     // Start is called before the first frame update
     void Start()
     {
         ListenToEvents();
-        deathDisplayText.text = "";
+        _deathDisplayText.text = "";
     }
 
    private void ListenToEvents()
@@ -24,6 +28,23 @@ public class DeathDisplay : MonoBehaviour
 
     private void PlayerDied()
     {
-        deathDisplayText.text = displayText;
+      //  deathDisplayText.text = displayText;
+        StartCoroutine(TextFlicker());
+    }
+
+    IEnumerator TextFlicker()
+    {
+        while (true)
+        {
+            if (_deathDisplayText.text == "")
+            {
+                _deathDisplayText.text = _displayText;
+            }
+            else
+            {
+                _deathDisplayText.text = "";
+            }
+            yield return new WaitForSecondsRealtime(_flickerDelay);
+        }
     }
 }

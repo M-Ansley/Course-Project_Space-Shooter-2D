@@ -139,6 +139,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
             FindObjectOfType<AudioManager>().Play("Explosion");
             Destroy(this.gameObject);
         }
+        else
+        {
+            GameEvents.current.PlayerDamaged();
+        }
     }
 
     // *******************************************************************************************
