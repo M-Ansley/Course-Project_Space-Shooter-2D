@@ -54,4 +54,21 @@ public class GameEvents : MonoBehaviour
         }
     }
 
+    [System.Serializable]
+    public class MyIntEvent : UnityEvent<int>
+    {
+
+    }
+
+    public MyIntEvent playerKill;
+
+    public void PlayerKill(int score)
+    {
+        if (playerKill != null)
+        {
+            playerKill.Invoke(score);
+        }
+    }
+   
+
 }

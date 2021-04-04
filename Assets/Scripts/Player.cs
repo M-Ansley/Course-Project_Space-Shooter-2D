@@ -30,10 +30,16 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     [SerializeField]
     private GameObject _tripleShotPrefab = null;
 
+    [Header("Speed")]
+    [SerializeField]
+    private GameObject _speedVisual = null;
+
     [Header("Shield")]
     [SerializeField]
     private GameObject _shieldVisual = null;
-   
+
+
+
     private bool _tripleShotActive = false;
     private bool _speedActive = false;
     private bool _shieldActive = false;
@@ -41,6 +47,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     void Start()
     {
         _shieldVisual.SetActive(false);
+        _speedVisual.SetActive(false);
         ListenToEvents();
         transform.position = new Vector3(0, 0, 0);
     }
@@ -174,6 +181,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     {
         _speedActive = true;
         _speed *= _speedMultiplier; // double the movement speed
+        _speedVisual.SetActive(true);
         StartCoroutine(SpeedPowerDownRoutine(5f));
     }
 
@@ -181,6 +189,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     {
         yield return new WaitForSecondsRealtime(delay);
         _speed /= _speedMultiplier;
+        _speedVisual.SetActive(false);
         _speedActive = false;
     }
 

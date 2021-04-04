@@ -5,6 +5,9 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField]
+    private int _scoreForKilling = 50;
+
+    [SerializeField]
     private float _multiplier = 4f;
 
     private float _startingYVal = 7;
@@ -56,6 +59,7 @@ public class Enemy : MonoBehaviour
         else if (other.CompareTag("Laser"))
         {
             Destroy(other.gameObject);
+            GameEvents.current.PlayerKill(_scoreForKilling);
             DestroySelf();
         }
     }
