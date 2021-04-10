@@ -9,6 +9,7 @@ public class GameLogic : MonoBehaviour
 
     private void Start()
     {
+        Cursor.visible = false;
         ListenToEvents();
     }
 
@@ -22,6 +23,10 @@ public class GameLogic : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) && !_gameRunning)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+        else if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
         }
     }
 

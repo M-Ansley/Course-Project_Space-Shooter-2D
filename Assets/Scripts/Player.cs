@@ -136,6 +136,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
             // Destroy(tripleShotInstance, 2f);
         }
         FindObjectOfType<AudioManager>().Play("Laser");
+        GameEvents.current.LaserFired();
     }
 
     // *******************************************************************************************

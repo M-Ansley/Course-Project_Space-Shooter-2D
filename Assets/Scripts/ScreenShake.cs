@@ -12,6 +12,8 @@ public class ScreenShake : MonoBehaviour
     [SerializeField]
     private Camera _mainCamera = null;
 
+    Coroutine shakeCoroutine;
+
     private void Start()
     {
         originalCameraPos = _mainCamera.transform.position;
@@ -20,7 +22,11 @@ public class ScreenShake : MonoBehaviour
 
     public void TriggerShake(float intensity, float duration)
     {
-        StartCoroutine(ShakeCameraCoroutine(intensity, duration));
+        if (shakeCoroutine != null)
+        {
+            StopCoroutine(shakeCoroutine);
+        }
+        shakeCoroutine = StartCoroutine(ShakeCameraCoroutine(intensity, duration));
     }
 
     IEnumerator ShakeCameraCoroutine(float intensity, float duration)

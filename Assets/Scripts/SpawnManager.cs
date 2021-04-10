@@ -53,7 +53,7 @@ public class SpawnManager : MonoBehaviour
 
     private Vector3 ReturnStartPos()
     {
-        float randomXPos = Random.Range(-9, 19);
+        float randomXPos = Random.Range(-8, 18);
         Vector3 startPos = new Vector3(randomXPos, 7, 0);
         return startPos;
     }

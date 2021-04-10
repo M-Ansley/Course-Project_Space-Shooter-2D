@@ -11,6 +11,12 @@ public class GameEvents : MonoBehaviour
     [SerializeField]
     private ScreenShake _screenShake;
 
+    [SerializeField]
+    private float _screenShakeDuration = 0.25f;
+
+    [SerializeField]
+    private float _screenShakeIntensity = 0.05f;
+
     private void Awake()
     {
         current = this;
@@ -57,10 +63,21 @@ public class GameEvents : MonoBehaviour
 
     public void EnemyDestroyed()
     {
-        _screenShake.TriggerShake(0.03f, 0.25f);
+        _screenShake.TriggerShake(_screenShakeIntensity, _screenShakeDuration);
         if (enemyDestroyed != null)
         {
             enemyDestroyed();
+        }
+    }
+
+    public event Action laserFired;
+
+    public void LaserFired()
+    {
+        _screenShake.TriggerShake(_screenShakeIntensity, _screenShakeDuration);
+        if (laserFired != null)
+        {
+            laserFired();
         }
     }
 
@@ -79,6 +96,6 @@ public class GameEvents : MonoBehaviour
             playerKill.Invoke(score);
         }
     }
-   
+
 
 }
