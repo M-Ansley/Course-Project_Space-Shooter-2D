@@ -36,8 +36,8 @@ public class Enemy : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
+    {        
+        transform.Translate(Vector3.down * _multiplier * Time.deltaTime);                
 
         if (_alive && transform.position.y < _yMinVal)
         {

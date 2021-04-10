@@ -20,6 +20,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private float _yMaxVal = 0;
     private float _yMinVal = -4;
 
+    [Header("Audio")]
+    [SerializeField]
+    private AudioSource _audioSource = null;
+
     [Header("Shooting")]
     [SerializeField]
     private GameObject _laserPrefab = null;
@@ -186,6 +190,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         _speedActive = true;
         _speed *= _speedMultiplier; // double the movement speed
         _speedVisual.SetActive(true);
+        _audioSource.pitch = 1.7f;
         StartCoroutine(SpeedPowerDownRoutine(5f));
     }
 
@@ -194,6 +199,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         yield return new WaitForSecondsRealtime(delay);
         _speed /= _speedMultiplier;
         _speedVisual.SetActive(false);
+        _audioSource.pitch = 1f;
         _speedActive = false;
     }
 

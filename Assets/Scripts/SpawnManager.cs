@@ -18,13 +18,19 @@ public class SpawnManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ListenToEvents();
-        StartCoroutine(SpawnEnemyRoutine());
+        ListenToEvents();       
+    }
+
+    public void StartSpawning()
+    {
+         StartCoroutine(SpawnEnemyRoutine());
         StartCoroutine(SpawnPowerupRoutine());
     }
         
     IEnumerator SpawnEnemyRoutine()
     {
+        yield return new WaitForSecondsRealtime(3.0f);
+
         while (!_stopSpawning)
         {
             GameObject newEnemy = Instantiate(_enemyPrefab, ReturnStartPos(), Quaternion.identity);
