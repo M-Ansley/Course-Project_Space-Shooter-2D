@@ -10,6 +10,8 @@ public class Laser : MonoBehaviour
     [SerializeField]
     private float maxYVal = 8;
 
+    private float minYVal = -8;
+
     private void Start()
     {
         StartCoroutine(MoveUntil());
@@ -17,7 +19,7 @@ public class Laser : MonoBehaviour
 
     IEnumerator MoveUntil()
     {
-        while (transform.position.y < maxYVal)
+        while (transform.position.y < maxYVal && transform.position.y > minYVal) // i.e. while it's within the bounds of the screen
         {
             transform.Translate(Vector3.up * _multiplier * Time.deltaTime);
             yield return null;

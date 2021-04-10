@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5320634072264133524}
   m_Layer: 0
   m_Name: Laser(Clone)
-  m_TagString: Laser
+  m_TagString: PlayerLaser
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -160,7 +160,7 @@ GameObject:
   - component: {fileID: 8617664199735929569}
   m_Layer: 0
   m_Name: Laser(Clone) (2)
-  m_TagString: Laser
+  m_TagString: PlayerLaser
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -301,7 +301,7 @@ GameObject:
   - component: {fileID: 4926436019324386595}
   m_Layer: 0
   m_Name: Triple_Shot
-  m_TagString: Untagged
+  m_TagString: PlayerLaser
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -338,7 +338,7 @@ GameObject:
   - component: {fileID: 4419122713447585539}
   m_Layer: 0
   m_Name: Laser(Clone) (1)
-  m_TagString: Laser
+  m_TagString: PlayerLaser
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

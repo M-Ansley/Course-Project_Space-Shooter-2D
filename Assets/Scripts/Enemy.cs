@@ -8,6 +8,9 @@ public class Enemy : MonoBehaviour
     private BoxCollider2D _collider = null;
 
     [SerializeField]
+    private GameObject _laserPrefab = null;
+
+    [SerializeField]
     private Animator animator = null;
 
     [SerializeField]
@@ -28,16 +31,17 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         RespawnAtTop();
+        StartCoroutine(FireCoroutine());
     }
 
-   // private void
-        
-    
+    // private void
+
+
 
     // Update is called once per frame
     void Update()
-    {        
-        transform.Translate(Vector3.down * _multiplier * Time.deltaTime);                
+    {
+        transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
 
         if (_alive && transform.position.y < _yMinVal)
         {
@@ -51,27 +55,43 @@ public class Enemy : MonoBehaviour
         transform.position = new Vector3(randomXPos, _startingYVal, 0);
     }
 
+    private IEnumerator FireCoroutine()
+    {
+        while (true)
+        {
+            FireLaser();
+            yield return new WaitForSecondsRealtime(Random.Range(3f, 7f)); // wait for 3-7 seconds
+        }
+    }
+
+    private void FireLaser()
+    {
+        Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y - 1.902f, transform.position.z);
+        GameObject laser = Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
+        laser.transform.Rotate(0, 0, -180);
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (_alive)
         {
-        // if other is Player
-        if (other.CompareTag("Player"))
-        {
-            Player player = other.transform.GetComponent<Player>();
-            if (player != null)
+            // if other is Player
+            if (other.CompareTag("Player"))
             {
-                print(gameObject.name);
-                other.GetComponent<Player>().DamagePlayer();
+                Player player = other.transform.GetComponent<Player>();
+                if (player != null)
+                {
+                    print(gameObject.name);
+                    other.GetComponent<Player>().DamagePlayer();
+                }
+                StartCoroutine(DestroySelf());
             }
-            StartCoroutine(DestroySelf());
-        }
-        else if (other.CompareTag("Laser"))
-        {
-            Destroy(other.gameObject);
-            GameEvents.current.PlayerKill(_scoreForKilling);
-            StartCoroutine(DestroySelf());
-        }
+            else if (other.CompareTag("PlayerLaser"))
+            {
+                Destroy(other.gameObject);
+                GameEvents.current.PlayerKill(_scoreForKilling);
+                StartCoroutine(DestroySelf());
+            }
 
         }
     }

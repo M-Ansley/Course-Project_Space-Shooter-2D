@@ -13,6 +13,7 @@ public class ScreenShake : MonoBehaviour
     private Camera _mainCamera = null;
 
     Coroutine shakeCoroutine;
+    Coroutine restoreCoroutine;
 
     private void Start()
     {
@@ -26,6 +27,10 @@ public class ScreenShake : MonoBehaviour
         {
             StopCoroutine(shakeCoroutine);
         }
+        if (restoreCoroutine != null)
+        {
+            restoreCoroutine = null;
+        }
         shakeCoroutine = StartCoroutine(ShakeCameraCoroutine(intensity, duration));
     }
 
@@ -38,7 +43,7 @@ public class ScreenShake : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        StartCoroutine(RestoreOriginalPosition(0.5f));
+        restoreCoroutine = StartCoroutine(RestoreOriginalPosition(0.5f));
     }
 
     private void ShakeCamera(float intensity)

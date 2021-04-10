@@ -163,10 +163,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
             GameEvents.current.PlayerDamaged();
             if (_nums.Count > 1)
             {
-            int randomNum = Random.RandomRange(0, _nums.Count);
-            print(randomNum);
-            _engines[randomNum].SetActive(true);
-            _nums.Remove(randomNum);
+                int randomNum = Random.RandomRange(0, _nums.Count);
+                print(randomNum);
+                _engines[randomNum].SetActive(true);
+                _nums.Remove(randomNum);
             }
             else
             {
@@ -235,9 +235,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     {
         if (!_shieldActive)
         {
-        _shieldActive = true;
-        StartCoroutine(ShieldExpand(0.5f));
-        _shieldVisual.SetActive(true);
+            _shieldActive = true;
+            StartCoroutine(ShieldExpand(0.5f));
+            _shieldVisual.SetActive(true);
         }
     }
 
@@ -251,33 +251,48 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
         while (_shieldVisual.transform.localScale != desiredScale)
         {
-            _shieldVisual.transform.localScale = Vector3.Lerp(startingScale, desiredScale, (elapsedTime/duration));
+            _shieldVisual.transform.localScale = Vector3.Lerp(startingScale, desiredScale, (elapsedTime / duration));
             elapsedTime += Time.deltaTime;
             yield return null;
         }
     }
 
 
-    // *******************************************************************************************
-    // EVENTS
 
-    private void ListenToEvents()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        GameEvents.current.powerupCollected.AddListener(PowerupCollected);
+                  
+        if (other.CompareTag("EnemyLaser"))
+        {
+            Destroy(other.gameObject);
+            FindObjectOfType<AudioManager>().Play("Explosion");
+            DamagePlayer();
+        }
+
     }
 
-    private void UnlistenToEvents()
-    {
-        GameEvents.current.powerupCollected.RemoveListener(PowerupCollected);
-    }
 
-    // ********************************************************************************************
-    // MISC
 
-    private void OnDestroy()
-    {
-        UnlistenToEvents();
-    }
+// *******************************************************************************************
+// EVENTS
+
+private void ListenToEvents()
+{
+    GameEvents.current.powerupCollected.AddListener(PowerupCollected);
+}
+
+private void UnlistenToEvents()
+{
+    GameEvents.current.powerupCollected.RemoveListener(PowerupCollected);
+}
+
+// ********************************************************************************************
+// MISC
+
+private void OnDestroy()
+{
+    UnlistenToEvents();
+}
 }
 
 

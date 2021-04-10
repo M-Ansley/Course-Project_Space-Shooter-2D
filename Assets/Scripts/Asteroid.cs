@@ -47,7 +47,7 @@ public class Asteroid : MonoBehaviour
                 }
                 StartCoroutine(DestroySelf());
             }
-            else if (other.CompareTag("Laser"))
+            else if (other.CompareTag("PlayerLaser"))
             {
                 Destroy(other.gameObject);
                 //GameEvents.current.PlayerKill(_scoreForKilling);
