@@ -5,6 +5,12 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField]
+    private BoxCollider2D _collider = null;
+
+    [SerializeField]
+    private Animator animator = null;
+
+    [SerializeField]
     private int _scoreForKilling = 50;
 
     [SerializeField]
@@ -15,6 +21,8 @@ public class Enemy : MonoBehaviour
 
     private float _minXVal = -10;
     private float _maxXVal = 10;
+
+    private bool _alive = true;
 
     // Start is called before the first frame update
     void Start()
@@ -31,7 +39,7 @@ public class Enemy : MonoBehaviour
     {
         transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
 
-        if (transform.position.y < _yMinVal)
+        if (_alive && transform.position.y < _yMinVal)
         {
             RespawnAtTop();
         }
@@ -45,6 +53,8 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (_alive)
+        {
         // if other is Player
         if (other.CompareTag("Player"))
         {
@@ -54,20 +64,28 @@ public class Enemy : MonoBehaviour
                 print(gameObject.name);
                 other.GetComponent<Player>().DamagePlayer();
             }
-            DestroySelf();
+            StartCoroutine(DestroySelf());
         }
         else if (other.CompareTag("Laser"))
         {
             Destroy(other.gameObject);
             GameEvents.current.PlayerKill(_scoreForKilling);
-            DestroySelf();
+            StartCoroutine(DestroySelf());
+        }
+
         }
     }
 
-    private void DestroySelf()
+    private IEnumerator DestroySelf()
     {
         FindObjectOfType<AudioManager>().Play("Explosion");
+        animator.SetTrigger("OnEnemyDeath");
         GameEvents.current.EnemyDestroyed();
+        _alive = false;
+        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Enemy_Destroyed")) // i.e. wait until the animation before this has played
+        {
+            yield return null;
+        }
         Destroy(this.gameObject);
     }
 }

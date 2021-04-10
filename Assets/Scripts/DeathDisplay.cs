@@ -9,6 +9,9 @@ public class DeathDisplay : MonoBehaviour
     private TextMeshProUGUI _deathDisplayText = null;
 
     [SerializeField]
+    private GameObject _restartPromptObj = null;
+
+    [SerializeField]
     private float _flickerDelay = 0.75f;
     
     [SerializeField]
@@ -19,6 +22,7 @@ public class DeathDisplay : MonoBehaviour
     {
         ListenToEvents();
         _deathDisplayText.text = "";
+        _restartPromptObj.SetActive(false);
     }
 
    private void ListenToEvents()
@@ -28,7 +32,7 @@ public class DeathDisplay : MonoBehaviour
 
     private void PlayerDied()
     {
-      //  deathDisplayText.text = displayText;
+        _restartPromptObj.SetActive(true);
         StartCoroutine(TextFlicker());
     }
 
