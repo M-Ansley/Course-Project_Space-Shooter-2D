@@ -41,6 +41,8 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnPowerupRoutine()
     {
+        yield return new WaitForSecondsRealtime(3.0f);
+
         while (!_stopSpawning)
         {
             int randPowerUpNum = Random.Range(0, powerups.Length);

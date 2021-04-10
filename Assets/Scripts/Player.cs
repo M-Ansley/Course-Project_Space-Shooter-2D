@@ -42,6 +42,12 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     [SerializeField]
     private GameObject _shieldVisual = null;
 
+    [Header("Engines")]
+    [SerializeField]
+    private GameObject[] _engines = null;
+    private int _activeThrusterNum = 0;
+    [SerializeField]
+    private List<int> _nums = null;
 
 
     private bool _tripleShotActive = false;
@@ -54,6 +60,14 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         _speedVisual.SetActive(false);
         ListenToEvents();
         transform.position = new Vector3(0, 0, 0);
+
+        _nums = new List<int>(_engines.Length);
+        for (int i = 0; i < _engines.Length; i++)
+        {
+            _nums.Add(i);
+        }
+
+
     }
 
     void Update()
@@ -146,6 +160,18 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         else
         {
             GameEvents.current.PlayerDamaged();
+            if (_nums.Count > 1)
+            {
+            int randomNum = Random.RandomRange(0, _nums.Count);
+            print(randomNum);
+            _engines[randomNum].SetActive(true);
+            _nums.Remove(randomNum);
+            }
+            else
+            {
+                _engines[_nums[0]].SetActive(true);
+                _nums.Remove(_nums[0]);
+            }
         }
     }
 
