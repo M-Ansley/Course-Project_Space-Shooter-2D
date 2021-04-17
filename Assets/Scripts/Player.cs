@@ -37,8 +37,12 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private GameObject _tripleShotPrefab = null;
 
     [Header("Thrusters")]
+    [SerializeField]
+    private float _thrustersMaxCharge = 200;
+    public float thrustersCurrentCharge;
     private bool _thrustersOn = false;
     private Coroutine _thrustersCoroutine;
+    private Coroutine _thrustersRechargeCoroutine;
 
     [Header("Speed")]
     [SerializeField]
@@ -67,7 +71,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         ListenToEvents();
         transform.position = new Vector3(0, 0, 0);
         _originalSpeed = _speed;
-
+        thrustersCurrentCharge = _thrustersMaxCharge;
         _nums = new List<int>(_engines.Length);
         for (int i = 0; i < _engines.Length; i++)
         {
@@ -138,13 +142,21 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     {
         _speed = _originalSpeed * 1.5F;
         _thrustersOn = true;
-        while (_thrustersOn)
+        _audioSource.pitch = 1.35f;
+        if (_thrustersRechargeCoroutine != null)
         {
+            StopCoroutine(_thrustersRechargeCoroutine);
+            _thrustersRechargeCoroutine = null;
+        }
+        while (thrustersCurrentCharge > 0)
+        {
+            thrustersCurrentCharge -= Time.deltaTime * 20;
             yield return null;
         }
         StopThrusters();
     }
 
+    // This needs to reset the thrusters and players speed to exactly how it was before the thrusters started
     private void StopThrusters()
     {
         _thrustersOn = false;
@@ -154,8 +166,20 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         }
         _thrustersCoroutine = null;
         _speed = _originalSpeed;
+        _audioSource.pitch = 1f;
+        _thrustersRechargeCoroutine = StartCoroutine(RechargeThrusters());
     }
-    
+
+    private IEnumerator RechargeThrusters()
+    {
+        while (thrustersCurrentCharge < _thrustersMaxCharge)
+        {
+            thrustersCurrentCharge += Time.deltaTime * 10;
+            yield return null;
+        }
+        thrustersCurrentCharge = _thrustersMaxCharge;
+    }
+
 
     // *******************************************************************************************
     // SHOOTING
@@ -265,8 +289,8 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     {
         print("Speed active");
         StopThrusters();
-       // thrustersOn = false;
-       // _speed = _originalSpeed;
+        // thrustersOn = false;
+        // _speed = _originalSpeed;
 
         _speedActive = true;
         _speed *= _speedMultiplier; // double the movement speed

@@ -1818,6 +1818,11 @@ PrefabInstance:
       propertyPath: scene.m_Handle
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6821847706637606006, guid: 4cffdc170e2e97042852d5280f19631f,
+        type: 3}
+      propertyPath: _thrustersMaxCharge
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 6821847706637606007, guid: 4cffdc170e2e97042852d5280f19631f,
         type: 3}
       propertyPath: m_Name
