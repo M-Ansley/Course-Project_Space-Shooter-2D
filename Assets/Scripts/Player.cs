@@ -314,6 +314,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         switch (powerupName)
         {
             case "Triple_Shot":
+                RefillAmmo();
                 TripleShotActive();
                 break;
             case "Speed":
