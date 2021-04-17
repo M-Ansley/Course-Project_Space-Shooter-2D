@@ -8,6 +8,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     // data types. Key data types (int, float, bool, string)
     private AudioManager _audioManager = null;
     private AmmoDisplay _ammoDisplay = null;
+    private ThrustersDisplay _thrustersDisplay = null;
 
     [Header("Health")]
     [SerializeField]
@@ -101,6 +102,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
             _ammoDisplay.Setup(_maxAmmo);
 
 
+
     }
 
     private void FindObjects()
@@ -121,6 +123,15 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         else
         {
             Debug.LogWarning("Ammo Display not found in scene");
+        }
+
+        if (FindObjectOfType<ThrustersDisplay>() != null)
+        {
+            _thrustersDisplay = FindObjectOfType<ThrustersDisplay>();
+        }
+        else
+        {
+            Debug.LogWarning("Thrusters Display not found in scene");
         }
     }
 
@@ -195,6 +206,13 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         while (thrustersCurrentCharge > 0)
         {
             thrustersCurrentCharge -= Time.deltaTime * 20;
+
+            if (_thrustersDisplay != null)
+            {
+                float val = thrustersCurrentCharge / _thrustersMaxCharge;
+                _thrustersDisplay.SetFillImage(val);
+            }
+
             yield return null;
         }
         StopThrusters();
@@ -219,6 +237,13 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         while (thrustersCurrentCharge < _thrustersMaxCharge)
         {
             thrustersCurrentCharge += Time.deltaTime * 10;
+
+            if (_thrustersDisplay != null)
+            {
+                float val = thrustersCurrentCharge / _thrustersMaxCharge;
+                _thrustersDisplay.SetFillImage(val);
+            }
+
             yield return null;
         }
         thrustersCurrentCharge = _thrustersMaxCharge;
@@ -296,7 +321,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
             if (_engines[randomNum].activeSelf)
             {
-                if(randomNum - 1 > -1)
+                if (randomNum - 1 > -1)
                 {
                     _engines[randomNum - 1].SetActive(true);
                 }
@@ -436,7 +461,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     private void AddHealth()
     {
-        if (_lives  < _livesMax)
+        if (_lives < _livesMax)
         {
 
             GameEvents.current.RestoreHealth();
