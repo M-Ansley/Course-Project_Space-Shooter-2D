@@ -13,7 +13,8 @@ public class Powerup : MonoBehaviour
         Triple_Shot,
         Speed,
         Shield,
-        Ammo
+        Ammo,
+        Health
     }
 
     public PowerupType powerupType;
@@ -52,6 +53,9 @@ public class Powerup : MonoBehaviour
                 break;
             case PowerupType.Ammo:
                 GameEvents.current.PowerupCollected("Ammo");
+                break;
+            case PowerupType.Health:
+                GameEvents.current.PowerupCollected("Health");
                 break;
             default:
                 Debug.LogWarning("Case not recognised");

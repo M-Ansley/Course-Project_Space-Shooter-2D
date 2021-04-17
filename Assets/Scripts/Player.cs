@@ -11,7 +11,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     [Header("Health")]
     [SerializeField]
-    private int _lives = 3;
+    private int _lives;
+    [SerializeField]
+    private int _livesMax = 3;
 
     [Header("Movement")]
     [SerializeField]
@@ -86,6 +88,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         _originalSpeed = _speed;
         thrustersCurrentCharge = _thrustersMaxCharge;
         _currentAmmo = _maxAmmo;
+        _lives = _livesMax;
 
         _nums = new List<int>(_engines.Length);
 
@@ -288,18 +291,40 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         else
         {
             GameEvents.current.PlayerDamaged();
-            if (_nums.Count > 1)
+
+            int randomNum = Random.Range(0, _nums.Count);
+
+            if (_engines[randomNum].activeSelf)
             {
-                int randomNum = Random.RandomRange(0, _nums.Count);
-                print(randomNum);
-                _engines[randomNum].SetActive(true);
-                _nums.Remove(randomNum);
+                if(randomNum - 1 > -1)
+                {
+                    _engines[randomNum - 1].SetActive(true);
+                }
+                else
+                {
+                    _engines[randomNum + 1].SetActive(true);
+                }
             }
             else
             {
-                _engines[_nums[0]].SetActive(true);
-                _nums.Remove(_nums[0]);
+                _engines[randomNum].SetActive(true);
             }
+
+
+
+            //if (_nums.Count > 1)
+            //{
+            //    int randomNum = Random.RandomRange(0, _nums.Count);
+            //    print(randomNum);
+
+            //    _engines[randomNum].SetActive(true);
+            //    //_nums.Remove(randomNum);
+            //}
+            //else
+            //{
+            //    _engines[_nums[0]].SetActive(true);
+            //  //  _nums.Remove(_nums[0]);
+            //}
         }
     }
 
@@ -325,6 +350,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
                 break;
             case "Ammo":
                 RefillAmmo();
+                break;
+            case "Health":
+                AddHealth();
                 break;
             default:
                 break;
@@ -403,6 +431,26 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         _currentAmmo = _maxAmmo;
         if (_ammoDisplay != null)
             _ammoDisplay.Refill();
+    }
+
+
+    private void AddHealth()
+    {
+        if (_lives  < _livesMax)
+        {
+
+            GameEvents.current.RestoreHealth();
+            _lives++;
+
+            foreach (GameObject g in _engines)
+            {
+                if (g.activeSelf == true)
+                {
+                    g.SetActive(false);
+                    break;
+                }
+            }
+        }
     }
 
 

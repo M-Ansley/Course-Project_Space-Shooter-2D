@@ -22,6 +22,17 @@ public class GameEvents : MonoBehaviour
         current = this;
     }
 
+    public event Action restoreHealth;
+
+    public void RestoreHealth()
+    {
+        if (restoreHealth != null)
+        {
+            restoreHealth();
+        }
+    }
+
+
     public event Action playerDamaged;
 
     public void PlayerDamaged()

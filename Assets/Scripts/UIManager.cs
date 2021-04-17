@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Sprite[] _liveSprites; // 2 = 2 lives, 1 = 1 life, 0 = no life
 
+    private int _maxLives = 3;
     private int _lives = 3;
     private int _score = 0;
 
@@ -48,6 +49,16 @@ public class UIManager : MonoBehaviour
         _livesImg.sprite = _liveSprites[currentLives];
     }
 
+    private void RestoreHealth()
+    {
+        if (_lives < _maxLives)
+        {
+            _lives++;
+            UpdateLives(_lives);
+            print("Should restore health");
+        }
+    }
+
     private void PlayerDamaged()
     {
         _lives--;
@@ -65,5 +76,6 @@ public class UIManager : MonoBehaviour
         GameEvents.current.playerDamaged += PlayerDamaged;
         GameEvents.current.playerDied += PlayerDied;
         GameEvents.current.playerKill.AddListener(EnemyDestroyed);
+        GameEvents.current.restoreHealth += RestoreHealth;
     }
 }
