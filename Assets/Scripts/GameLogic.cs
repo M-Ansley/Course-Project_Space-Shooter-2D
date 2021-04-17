@@ -39,4 +39,6 @@ public class GameLogic : MonoBehaviour
     {
         GameEvents.current.playerDied += GameOver;
     }
+
+   
 }

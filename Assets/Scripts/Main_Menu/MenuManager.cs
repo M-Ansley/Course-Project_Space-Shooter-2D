@@ -5,8 +5,22 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
-    public void LoadGame()
+    [SerializeField]
+    private string _sceneName = "Main";
+
+    //private void Start()
+    //{
+    //    LoadScene();
+    //    LoadScene("Main");
+    //}
+
+    public void LoadScene()
     {
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene(_sceneName);
+    }
+
+    public void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 }

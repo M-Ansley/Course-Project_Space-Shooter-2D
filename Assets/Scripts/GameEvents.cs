@@ -26,6 +26,7 @@ public class GameEvents : MonoBehaviour
 
     public void PlayerDamaged()
     {
+        _screenShake.TriggerShake(_screenShakeIntensity, _screenShakeDuration);
         if (playerDamaged != null)
         {
             playerDamaged();
@@ -36,6 +37,7 @@ public class GameEvents : MonoBehaviour
 
     public void PlayerDied()
     {
+        _screenShake.TriggerShake(_screenShakeIntensity, _screenShakeDuration);
         if (playerDied != null)
         {
             playerDied();
@@ -63,7 +65,7 @@ public class GameEvents : MonoBehaviour
 
     public void EnemyDestroyed()
     {
-        _screenShake.TriggerShake(_screenShakeIntensity, _screenShakeDuration);
+       // _screenShake.TriggerShake(_screenShakeIntensity, _screenShakeDuration);
         if (enemyDestroyed != null)
         {
             enemyDestroyed();
@@ -74,7 +76,7 @@ public class GameEvents : MonoBehaviour
 
     public void LaserFired()
     {
-        _screenShake.TriggerShake(_screenShakeIntensity, _screenShakeDuration);
+        
         if (laserFired != null)
         {
             laserFired();
