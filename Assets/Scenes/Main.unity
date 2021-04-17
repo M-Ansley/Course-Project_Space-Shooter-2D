@@ -216,8 +216,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _screenShake: {fileID: 126211733}
-  _screenShakeDuration: 0.5
-  _screenShakeIntensity: 0.04
+  _screenShakeDuration: 0.25
+  _screenShakeIntensity: 0.1
   powerupCollected:
     m_PersistentCalls:
       m_Calls: []

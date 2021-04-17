@@ -37,7 +37,8 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private GameObject _tripleShotPrefab = null;
 
     [Header("Thrusters")]
-    private bool thrustersOn = false;
+    private bool _thrustersOn = false;
+    private Coroutine _thrustersCoroutine;
 
     [Header("Speed")]
     [SerializeField]
@@ -80,7 +81,6 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     {
         CalculateMovement();
         Shooting();
-        ThrusterControls();
         Thrusters();
     }
 
@@ -116,37 +116,46 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         }
     }
 
-    private void ThrusterControls()
+    private void Thrusters()
     {
         if (!_speedActive)
         {
             if (Input.GetKeyDown(KeyCode.LeftShift))
             {
-                print("Thrusters on");
-                thrustersOn = true;
+                if (_thrustersCoroutine == null)
+                {
+                    _thrustersCoroutine = StartCoroutine(RunThrusters());
+                }
             }
             else if (Input.GetKeyUp(KeyCode.LeftShift))
             {
-                print("Thrusters off");
-                thrustersOn = false;
+                StopThrusters();
             }
         }
     }
 
-    private void Thrusters()
+    private IEnumerator RunThrusters()
     {
-        if (!_speedActive)
+        _speed = _originalSpeed * 1.5F;
+        _thrustersOn = true;
+        while (_thrustersOn)
         {
-            if (thrustersOn)
-            {
-                _speed = _originalSpeed * 1.5F;
-            }
-            else
-            {
-                _speed = _originalSpeed;
-            }
+            yield return null;
         }
+        StopThrusters();
     }
+
+    private void StopThrusters()
+    {
+        _thrustersOn = false;
+        if (_thrustersCoroutine != null)
+        {
+            StopCoroutine(_thrustersCoroutine);
+        }
+        _thrustersCoroutine = null;
+        _speed = _originalSpeed;
+    }
+    
 
     // *******************************************************************************************
     // SHOOTING
@@ -255,11 +264,13 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private void SpeedActive()
     {
         print("Speed active");
-        thrustersOn = false;
-        _speed = _originalSpeed;
+        StopThrusters();
+       // thrustersOn = false;
+       // _speed = _originalSpeed;
 
         _speedActive = true;
         _speed *= _speedMultiplier; // double the movement speed
+        print(_speed);
         _speedVisual.SetActive(true);
         _audioSource.pitch = 1.7f;
         StartCoroutine(SpeedPowerDownRoutine(5f));
