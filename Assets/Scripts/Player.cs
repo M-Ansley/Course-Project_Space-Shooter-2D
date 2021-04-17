@@ -13,7 +13,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     [Header("Movement")]
     [SerializeField]
     private float _speed = 3.5f;
-    private float _speedMultiplier = 1.5f;
+    [SerializeField]
+    private float _speedMultiplier = 2f;
+    private float _originalSpeed;
 
 
     private float _xClamping = 12;
@@ -33,6 +35,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     [SerializeField]
     private GameObject _tripleShotPrefab = null;
+
+    [Header("Thrusters")]
+    private bool thrustersOn = false;
 
     [Header("Speed")]
     [SerializeField]
@@ -60,6 +65,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         _speedVisual.SetActive(false);
         ListenToEvents();
         transform.position = new Vector3(0, 0, 0);
+        _originalSpeed = _speed;
 
         _nums = new List<int>(_engines.Length);
         for (int i = 0; i < _engines.Length; i++)
@@ -74,6 +80,8 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     {
         CalculateMovement();
         Shooting();
+        ThrusterControls();
+        Thrusters();
     }
 
     // *******************************************************************************************
@@ -105,6 +113,38 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         else if (transform.position.x <= -_xClamping)
         {
             transform.position = new Vector3(11, transform.position.y, transform.position.z);
+        }
+    }
+
+    private void ThrusterControls()
+    {
+        if (!_speedActive)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                print("Thrusters on");
+                thrustersOn = true;
+            }
+            else if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                print("Thrusters off");
+                thrustersOn = false;
+            }
+        }
+    }
+
+    private void Thrusters()
+    {
+        if (!_speedActive)
+        {
+            if (thrustersOn)
+            {
+                _speed = _originalSpeed * 1.5F;
+            }
+            else
+            {
+                _speed = _originalSpeed;
+            }
         }
     }
 
@@ -214,6 +254,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     // SPEED
     private void SpeedActive()
     {
+        print("Speed active");
+        thrustersOn = false;
+        _speed = _originalSpeed;
+
         _speedActive = true;
         _speed *= _speedMultiplier; // double the movement speed
         _speedVisual.SetActive(true);
@@ -223,6 +267,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     IEnumerator SpeedPowerDownRoutine(float delay)
     {
+        print("Speed inactive");
         yield return new WaitForSecondsRealtime(delay);
         _speed /= _speedMultiplier;
         _speedVisual.SetActive(false);
@@ -261,7 +306,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-                  
+
         if (other.CompareTag("EnemyLaser"))
         {
             Destroy(other.gameObject);
@@ -271,29 +316,29 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     }
 
-   
 
 
-// *******************************************************************************************
-// EVENTS
 
-private void ListenToEvents()
-{
-    GameEvents.current.powerupCollected.AddListener(PowerupCollected);
-}
+    // *******************************************************************************************
+    // EVENTS
 
-private void UnlistenToEvents()
-{
-    GameEvents.current.powerupCollected.RemoveListener(PowerupCollected);
-}
+    private void ListenToEvents()
+    {
+        GameEvents.current.powerupCollected.AddListener(PowerupCollected);
+    }
 
-// ********************************************************************************************
-// MISC
+    private void UnlistenToEvents()
+    {
+        GameEvents.current.powerupCollected.RemoveListener(PowerupCollected);
+    }
 
-private void OnDestroy()
-{
-    UnlistenToEvents();
-}
+    // ********************************************************************************************
+    // MISC
+
+    private void OnDestroy()
+    {
+        UnlistenToEvents();
+    }
 }
 
 
