@@ -6,6 +6,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 {
     // public or private. If private, only this class knows it exists.
     // data types. Key data types (int, float, bool, string)
+    private AudioManager _audioManager = null;
+    private AmmoDisplay _ammoDisplay = null;
+
     [Header("Health")]
     [SerializeField]
     private int _lives = 3;
@@ -32,6 +35,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     [SerializeField]
     private float _fireRate = 0.5f;
     private float _nextFire = 0;
+
+    [SerializeField]
+    private int _maxAmmo = 15;
+    private int _currentAmmo;
 
     [SerializeField]
     private GameObject _tripleShotPrefab = null;
@@ -64,24 +71,58 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private bool _speedActive = false;
     private bool _shieldActive = false;
 
-    void Start()
+    private void Start()
+    {
+        ListenToEvents();
+        FindObjects();
+        VariableSetup();
+    }
+
+    private void VariableSetup()
     {
         _shieldVisual.SetActive(false);
         _speedVisual.SetActive(false);
-        ListenToEvents();
         transform.position = new Vector3(0, 0, 0);
         _originalSpeed = _speed;
         thrustersCurrentCharge = _thrustersMaxCharge;
+        _currentAmmo = _maxAmmo;
+
         _nums = new List<int>(_engines.Length);
+
         for (int i = 0; i < _engines.Length; i++)
         {
             _nums.Add(i);
         }
 
+        if (_ammoDisplay != null)
+            _ammoDisplay.Setup(_maxAmmo);
+
 
     }
 
-    void Update()
+    private void FindObjects()
+    {
+        if (FindObjectOfType<AudioManager>() != null)
+        {
+            _audioManager = FindObjectOfType<AudioManager>();
+        }
+        else
+        {
+            Debug.LogWarning("Audio Manager not found in scene");
+        }
+
+        if (FindObjectOfType<AmmoDisplay>() != null)
+        {
+            _ammoDisplay = FindObjectOfType<AmmoDisplay>();
+        }
+        else
+        {
+            Debug.LogWarning("Ammo Display not found in scene");
+        }
+    }
+
+
+    private void Update()
     {
         CalculateMovement();
         Shooting();
@@ -186,14 +227,18 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     private void Shooting()
     {
-        if (Input.GetButtonDown("Fire1") && Time.time > _nextFire) // A cooldown system
+        if (_currentAmmo > 0)
         {
-            FireLaser();
+            if (Input.GetButtonDown("Fire1") && Time.time > _nextFire) // A cooldown system
+            {
+                FireLaser();
+            }
         }
     }
 
     private void FireLaser()
     {
+        _currentAmmo--;
         _nextFire = Time.time + _fireRate;
         if (!_tripleShotActive)
         {
@@ -208,7 +253,13 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
             // GameObject tripleShotInstance = Instantiate(_tripleShotPrefab, positionOffset, Quaternion.identity);
             // Destroy(tripleShotInstance, 2f);
         }
-        FindObjectOfType<AudioManager>().Play("Laser");
+
+        if (_audioManager != null)
+            _audioManager.Play("Laser");
+
+        if (_ammoDisplay != null)
+            _ammoDisplay.UpdateAmmo();
+
         GameEvents.current.LaserFired();
     }
 
@@ -228,7 +279,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         if (_lives < 1)
         {
             GameEvents.current.PlayerDied();
-            FindObjectOfType<AudioManager>().Play("Explosion");
+
+            if (_audioManager != null)
+                _audioManager.Play("Explosion");
+
             Destroy(this.gameObject);
         }
         else
@@ -254,7 +308,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     public void PowerupCollected(string powerupName)
     {
         Debug.Log(powerupName + " collected");
-        FindObjectOfType<AudioManager>().Play("Power-Up");
+        if (_audioManager != null)
+            _audioManager.Play("Power-Up");
+
         switch (powerupName)
         {
             case "Triple_Shot":
@@ -265,6 +321,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
                 break;
             case "Shield":
                 ShieldActive();
+                break;
+            case "Ammo":
+                RefillAmmo();
                 break;
             default:
                 break;
@@ -338,6 +397,13 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     }
 
 
+    private void RefillAmmo()
+    {
+        _currentAmmo = _maxAmmo;
+        if (_ammoDisplay != null)
+            _ammoDisplay.Refill();
+    }
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -345,7 +411,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         if (other.CompareTag("EnemyLaser"))
         {
             Destroy(other.gameObject);
-            FindObjectOfType<AudioManager>().Play("Explosion");
+
+            if (_audioManager != null)
+                _audioManager.Play("Explosion");
+
             DamagePlayer();
         }
 
