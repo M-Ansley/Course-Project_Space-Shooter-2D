@@ -61,6 +61,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     [Header("Shield")]
     [SerializeField]
     private GameObject _shieldVisual = null;
+    [SerializeField]
+    private int _shieldStrength;
+    private int _maxShieldStrength = 3;
 
     [Header("Shock")]
     [SerializeField]
@@ -96,6 +99,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         thrustersCurrentCharge = _thrustersMaxCharge;
         _currentAmmo = _maxAmmo;
         _lives = _livesMax;
+        _shieldStrength = _maxShieldStrength;
 
         _nums = new List<int>(_engines.Length);
 
@@ -324,8 +328,16 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     {
         if (_shieldActive)
         {
-            _shieldVisual.SetActive(false);
-            _shieldActive = false;
+            if (_shieldStrength > 1)
+            {
+                _shieldStrength--;
+                AdjustShieldVisual();
+            }
+            else
+            {
+                _shieldVisual.SetActive(false);
+                _shieldActive = false;
+            }
             return; // will break us out of the method we're currently in. 
         }
 
@@ -461,6 +473,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
             StartCoroutine(ShieldExpand(0.5f));
             _shieldVisual.SetActive(true);
         }
+
+        _shieldStrength = _maxShieldStrength;
+        AdjustShieldVisual();
     }
 
     IEnumerator ShieldExpand(float duration)
@@ -476,6 +491,30 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
             _shieldVisual.transform.localScale = Vector3.Lerp(startingScale, desiredScale, (elapsedTime / duration));
             elapsedTime += Time.deltaTime;
             yield return null;
+        }
+    }
+
+    private void AdjustShieldVisual()
+    {
+        if (_shieldVisual.GetComponent<SpriteRenderer>() != null)
+        {
+            SpriteRenderer _shieldImage = _shieldVisual.GetComponent<SpriteRenderer>();
+            switch (_shieldStrength)
+            {
+                case 3:
+                    _shieldImage.color = new Color(_shieldImage.color.r, _shieldImage.color.g, _shieldImage.color.b, 1f);
+                    break;
+                case 2:
+                    _shieldImage.color = new Color(_shieldImage.color.r, _shieldImage.color.g, _shieldImage.color.b, 0.66f);
+                    break;
+                case 1:
+                    _shieldImage.color = new Color(_shieldImage.color.r, _shieldImage.color.g, _shieldImage.color.b, 0.33f);
+                    break;
+                default:
+                    _shieldImage.color = new Color(_shieldImage.color.r, _shieldImage.color.g, _shieldImage.color.b, 1);
+                    break;
+            }
+
         }
     }
 

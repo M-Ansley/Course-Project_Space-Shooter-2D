@@ -48,7 +48,7 @@ public class SpawnManager : MonoBehaviour
 
         while (!_stopSpawning)
         {
-            int randomVal = Random.Range(0, 10);
+            int randomVal = Random.Range(0, 12);
             if (randomVal <= 1) // spawn a RARE powerup
             {
                 Debug.Log("Spawning a rare powerup");
