@@ -13,20 +13,23 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject[] powerups = null;
 
+    [SerializeField]
+    private GameObject[] rarePowerups = null;
+
     private bool _stopSpawning = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        ListenToEvents();       
+        ListenToEvents();
     }
 
     public void StartSpawning()
     {
-         StartCoroutine(SpawnEnemyRoutine());
+        StartCoroutine(SpawnEnemyRoutine());
         StartCoroutine(SpawnPowerupRoutine());
     }
-        
+
     IEnumerator SpawnEnemyRoutine()
     {
         yield return new WaitForSecondsRealtime(3.0f);
@@ -45,8 +48,19 @@ public class SpawnManager : MonoBehaviour
 
         while (!_stopSpawning)
         {
-            int randPowerUpNum = Random.Range(0, powerups.Length);
-            Instantiate(powerups[randPowerUpNum], ReturnStartPos(), Quaternion.identity);
+            int randomVal = Random.Range(0, 10);
+            if (randomVal <= 1) // spawn a RARE powerup
+            {
+                Debug.Log("Spawning a rare powerup");
+                int randPowerUpNum = Random.Range(0, rarePowerups.Length);
+                Instantiate(rarePowerups[randPowerUpNum], ReturnStartPos(), Quaternion.identity);
+            }
+            else
+            {
+                int randPowerUpNum = Random.Range(0, powerups.Length);
+                Instantiate(powerups[randPowerUpNum], ReturnStartPos(), Quaternion.identity);
+            }
+
             yield return new WaitForSecondsRealtime(Random.Range(3f, 8f));
         }
     }

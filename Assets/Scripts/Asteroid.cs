@@ -53,6 +53,10 @@ public class Asteroid : MonoBehaviour
                 //GameEvents.current.PlayerKill(_scoreForKilling);
                 StartCoroutine(DestroySelf());
             }
+            else if (other.CompareTag("PlayerShockWave"))
+            {
+                StartCoroutine(DestroySelf());
+            }
         }
 
     }

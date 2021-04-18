@@ -62,6 +62,12 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     [SerializeField]
     private GameObject _shieldVisual = null;
 
+    [Header("Shock")]
+    [SerializeField]
+    private GameObject _shockPrefab = null;
+    private int _shocksAvailable = 0;
+    private bool _shockActive = false;
+
     [Header("Engines")]
     [SerializeField]
     private GameObject[] _engines = null;
@@ -268,26 +274,46 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     {
         _currentAmmo--;
         _nextFire = Time.time + _fireRate;
-        if (!_tripleShotActive)
+        if (!_tripleShotActive && !_shockActive)
         {
             Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y + 1.25f, transform.position.z);
             Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
+            FireUpdate();
         }
-        else
+        else if (_tripleShotActive)
         {
             Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y + 0.3f, transform.position.z);
             Instantiate(_tripleShotPrefab, positionOffset, Quaternion.identity);
-
+            FireUpdate();
             // GameObject tripleShotInstance = Instantiate(_tripleShotPrefab, positionOffset, Quaternion.identity);
             // Destroy(tripleShotInstance, 2f);
         }
+        else if (_shockActive)
+        {
+            if (_shocksAvailable > 0)
+            {
+                Debug.Log("Should instantiate shock");
+                Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
+                Instantiate(_shockPrefab, positionOffset, Quaternion.identity);
+                if (_audioManager != null)
+                    _audioManager.Play("Shock");
+                _shocksAvailable--;
+                _shockActive = false;
 
+            }
+
+        }
+
+
+    }
+
+    private void FireUpdate()
+    {
         if (_audioManager != null)
             _audioManager.Play("Laser");
 
         if (_ammoDisplay != null)
             _ammoDisplay.UpdateAmmo();
-
         GameEvents.current.LaserFired();
     }
 
@@ -378,6 +404,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
                 break;
             case "Health":
                 AddHealth();
+                break;
+            case "Shock":
+                EnableShock();
                 break;
             default:
                 break;
@@ -476,6 +505,20 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
                 }
             }
         }
+    }
+
+    private void EnableShock()
+    {
+        _shocksAvailable = 1;
+        _shockActive = true;
+        StartCoroutine(ShockPowerDownRoutine(5f));
+    }
+
+    IEnumerator ShockPowerDownRoutine(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        _shocksAvailable = 0;
+        _shockActive = false;
     }
 
 

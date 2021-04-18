@@ -92,6 +92,11 @@ public class Enemy : MonoBehaviour
                 GameEvents.current.PlayerKill(_scoreForKilling);
                 StartCoroutine(DestroySelf());
             }
+            else if (other.CompareTag("PlayerShockWave"))
+            {
+                GameEvents.current.PlayerKill(_scoreForKilling);
+                StartCoroutine(DestroySelf());
+            }
 
         }
     }
