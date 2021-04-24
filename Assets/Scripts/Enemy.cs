@@ -19,6 +19,12 @@ public class Enemy : MonoBehaviour
     private GameObject _beam = null;
 
     [SerializeField]
+    private bool _hasShield = false;
+
+    [SerializeField]
+    private GameObject _shield = null;
+
+    [SerializeField]
     private Animator animator = null;
 
     [SerializeField]
@@ -200,6 +206,9 @@ public class Enemy : MonoBehaviour
     {
         if (_alive)
         {
+            
+                      
+
             // if other is Player
             if (other.CompareTag("Player"))
             {
@@ -209,15 +218,30 @@ public class Enemy : MonoBehaviour
                     print(gameObject.name);
                     other.GetComponent<Player>().DamagePlayer();
                 }
+
+                if (_hasShield)
+                {
+                    FindObjectOfType<AudioManager>().Play("Explosion");
+                    _shield.SetActive(false);
+                    _hasShield = false;
+                    return;
+                }
                 StartCoroutine(DestroySelf());
             }
             else if (other.CompareTag("PlayerLaser"))
             {
                 Destroy(other.gameObject);
                 GameEvents.current.PlayerKill(_scoreForKilling);
+                if (_hasShield)
+                {
+                    FindObjectOfType<AudioManager>().Play("Explosion");
+                    _shield.SetActive(false);
+                    _hasShield = false;
+                    return;
+                }
                 StartCoroutine(DestroySelf());
             }
-            else if (other.CompareTag("PlayerShockWave"))
+            else if (other.CompareTag("PlayerShockWave"))  // Nothing stops the shockwave, not even a shield
             {
                 GameEvents.current.PlayerKill(_scoreForKilling);
                 StartCoroutine(DestroySelf());
