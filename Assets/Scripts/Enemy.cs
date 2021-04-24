@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static VariableContainer;
 
 public class Enemy : MonoBehaviour
 {
@@ -27,11 +28,18 @@ public class Enemy : MonoBehaviour
 
     private bool _alive = true;
 
+    private bool _sideToSide = false;
+    private bool _moveLeft = true;
+
+    Vector3 maxXPos;
+    Vector3 minXPos;    
+
     // Start is called before the first frame update
     void Start()
     {
         RespawnAtTop();
         StartCoroutine(FireCoroutine());
+        StartCoroutine(SideToSide(Random.Range(10, 20)));
     }
 
     // private void
@@ -47,10 +55,18 @@ public class Enemy : MonoBehaviour
         {
             RespawnAtTop();
         }
+
+        if (_sideToSide)
+        {
+            SideToSide();
+        }
     }
 
     private void RespawnAtTop()
     {
+        maxXPos = new Vector3(transform.position.x + 1, transform.position.y, transform.position.z);
+        minXPos = new Vector3(transform.position.x - 1, transform.position.y, transform.position.z);
+
         float randomXPos = Random.Range(_minXVal, _maxXVal);
         transform.position = new Vector3(randomXPos, _startingYVal, 0);
     }
@@ -63,6 +79,55 @@ public class Enemy : MonoBehaviour
             yield return new WaitForSecondsRealtime(Random.Range(3f, 7f)); // wait for 3-7 seconds
         }
     }
+
+    float elapsedTime = 0;
+
+    private void SideToSide()
+    {
+        if (_moveLeft)
+        {
+            if (transform.position.x > maxXPos.x)
+            {
+                _moveLeft = false;
+            }
+            else
+            {
+                transform.position = new Vector3(transform.position.x + 0.02f, transform.position.y, transform.position.z);
+            }
+        }
+
+        if (!_moveLeft)
+        {
+            if (transform.position.x < minXPos.x)
+            {
+                _moveLeft = true;
+            }
+            else
+            {
+                transform.position = new Vector3(transform.position.x - 0.02f, transform.position.y, transform.position.z);
+            }
+        }
+    }
+
+    private IEnumerator SideToSide(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+
+        _sideToSide = true;               
+    }
+
+    // PingPongLerp movement
+        //Vector3 maxXPos = new Vector3(transform.position.x + 2, transform.position.y, transform.position.z);
+        //Vector3 minXPos = new Vector3(transform.position.x - 2, transform.position.y, transform.position.z);
+
+        //float elapsedTime = 0;
+
+        //while (true)
+        //{
+        //    transform.position = Vector3.Lerp(minXPos, maxXPos, Mathf.PingPong(elapsedTime, 0.5f));
+        //    elapsedTime += Time.deltaTime;
+        //    yield return null;
+        //}
 
     private void FireLaser()
     {
