@@ -6,7 +6,8 @@ public class VariableContainer
 {
     public enum EnemyType
     {
-        Default
+        Default,
+        Beamer
     }
 
     [System.Serializable]

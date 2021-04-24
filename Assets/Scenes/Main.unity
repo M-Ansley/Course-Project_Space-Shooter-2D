@@ -1111,12 +1111,14 @@ MonoBehaviour:
     numOfEnemies: 5
     enemyPrefabs:
     - {fileID: 2637729078673077350, guid: 951852bde8afca642a9ca6ebd279189b, type: 3}
+    - {fileID: 2637729078673077350, guid: 7f92213d73ad52a44962d147334c7a47, type: 3}
   - waveNum: 2
     canDodge: 0
     delayBetweenEnemies: 2.25
     numOfEnemies: 10
     enemyPrefabs:
     - {fileID: 2637729078673077350, guid: 951852bde8afca642a9ca6ebd279189b, type: 3}
+    - {fileID: 2637729078673077350, guid: 7f92213d73ad52a44962d147334c7a47, type: 3}
   - waveNum: 3
     canDodge: 0
     delayBetweenEnemies: 1.5
@@ -2946,6 +2948,10 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 404460590, guid: 4cffdc170e2e97042852d5280f19631f, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 77037f843f9e39842a14e9a2e6a4d13d, type: 3}
     - target: {fileID: 1846953077, guid: 4cffdc170e2e97042852d5280f19631f, type: 3}
       propertyPath: m_IsActive
       value: 0

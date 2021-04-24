@@ -25,7 +25,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
 
     private float _xClamping = 12;
-    private float _yMaxVal = 0;
+    private float _yMaxVal = 3;
     private float _yMinVal = -4;
 
     [Header("Audio")]

@@ -5,11 +5,18 @@ using static VariableContainer;
 
 public class Enemy : MonoBehaviour
 {
+    public EnemyType enemyType;
+
     [SerializeField]
     private BoxCollider2D _collider = null;
 
     [SerializeField]
     private GameObject _laserPrefab = null;
+
+    [SerializeField]
+    private GameObject _beamPrefab = null;
+
+    private GameObject _beam = null;
 
     [SerializeField]
     private Animator animator = null;
@@ -32,13 +39,16 @@ public class Enemy : MonoBehaviour
     private bool _moveLeft = true;
 
     Vector3 maxXPos;
-    Vector3 minXPos;    
+    Vector3 minXPos;
+
+    private Coroutine _fireCoroutine;
+    private Coroutine _beamCoroutine;
 
     // Start is called before the first frame update
     void Start()
     {
         RespawnAtTop();
-        StartCoroutine(FireCoroutine());
+        _fireCoroutine = StartCoroutine(FireCoroutine());
         StartCoroutine(SideToSide(Random.Range(10, 20)));
     }
 
@@ -49,16 +59,43 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
+        switch (enemyType)
+        {
+            case EnemyType.Default:
+                transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
+                if (_sideToSide)
+                    SideToSide();
+                break;
+
+            case EnemyType.Beamer:
+                if (transform.position.x < _minXVal || transform.position.z > _maxXVal)
+                {
+                    _moveLeft = !_moveLeft;
+                }
+
+                if (_moveLeft)
+                {
+                    transform.Translate(new Vector3(-0.5f, -0.5f, 0) * _multiplier * Time.deltaTime);
+
+                }
+                else
+                {
+                    transform.Translate(new Vector3(0.5f, -0.5f, 0) * _multiplier * Time.deltaTime);
+                }
+                break;
+
+            default:
+                break;
+        }
+
 
         if (_alive && transform.position.y < _yMinVal)
         {
             RespawnAtTop();
-        }
-
-        if (_sideToSide)
-        {
-            SideToSide();
+            if (enemyType == EnemyType.Beamer)
+            {
+                _moveLeft = !_moveLeft; // reverse their direction
+            }
         }
     }
 
@@ -75,7 +112,16 @@ public class Enemy : MonoBehaviour
     {
         while (true)
         {
-            FireLaser();
+            yield return new WaitForSecondsRealtime(1.5f);
+            if (enemyType != EnemyType.Beamer)
+            {
+                FireLaser();
+            }
+            else
+            {
+                _beamCoroutine = StartCoroutine(FireBeam(1.5f));
+
+            }
             yield return new WaitForSecondsRealtime(Random.Range(3f, 7f)); // wait for 3-7 seconds
         }
     }
@@ -113,27 +159,41 @@ public class Enemy : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(delay);
 
-        _sideToSide = true;               
+        _sideToSide = true;
     }
 
     // PingPongLerp movement
-        //Vector3 maxXPos = new Vector3(transform.position.x + 2, transform.position.y, transform.position.z);
-        //Vector3 minXPos = new Vector3(transform.position.x - 2, transform.position.y, transform.position.z);
+    //Vector3 maxXPos = new Vector3(transform.position.x + 2, transform.position.y, transform.position.z);
+    //Vector3 minXPos = new Vector3(transform.position.x - 2, transform.position.y, transform.position.z);
 
-        //float elapsedTime = 0;
+    //float elapsedTime = 0;
 
-        //while (true)
-        //{
-        //    transform.position = Vector3.Lerp(minXPos, maxXPos, Mathf.PingPong(elapsedTime, 0.5f));
-        //    elapsedTime += Time.deltaTime;
-        //    yield return null;
-        //}
+    //while (true)
+    //{
+    //    transform.position = Vector3.Lerp(minXPos, maxXPos, Mathf.PingPong(elapsedTime, 0.5f));
+    //    elapsedTime += Time.deltaTime;
+    //    yield return null;
+    //}
 
     private void FireLaser()
     {
         Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y - 1.902f, transform.position.z);
         GameObject laser = Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
         laser.transform.Rotate(0, 0, -180);
+    }
+
+    // For BEAMER enemy types
+    private IEnumerator FireBeam(float duration)
+    {
+        Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y - 21f, transform.position.z);
+        _beam = Instantiate(_beamPrefab, positionOffset, Quaternion.identity);
+        _beam.transform.parent = this.gameObject.transform;
+        //FindObjectOfType<AudioManager>().Play("Beam");
+        yield return new WaitForSecondsRealtime(duration);
+        if (_beam != null)
+        {
+            Destroy(_beam);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -171,6 +231,14 @@ public class Enemy : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("Explosion");
         animator.SetTrigger("OnEnemyDeath");
         GameEvents.current.EnemyDestroyed();
+        if (_fireCoroutine != null)
+            StopCoroutine(_fireCoroutine);
+        if (_beamCoroutine != null)
+            StopCoroutine(_beamCoroutine);
+        if (_beam != null)
+        {
+            Destroy(_beam);
+        }
         _alive = false;
         while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Enemy_Destroyed")) // i.e. wait until the animation before this has played
         {
