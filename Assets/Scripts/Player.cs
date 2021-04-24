@@ -396,7 +396,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     public void PowerupCollected(string powerupName)
     {
         Debug.Log(powerupName + " collected");
-        if (_audioManager != null)
+        if (powerupName != "Damage" && _audioManager != null)
             _audioManager.Play("Power-Up");
 
         switch (powerupName)
@@ -419,6 +419,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
                 break;
             case "Shock":
                 EnableShock();
+                break;
+            case "Damage":
+                DamagePlayer();
+                _audioManager.Play("Explosion");
                 break;
             default:
                 break;

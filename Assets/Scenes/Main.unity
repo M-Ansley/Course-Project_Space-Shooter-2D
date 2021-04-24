@@ -159,6 +159,7 @@ MonoBehaviour:
   - {fileID: 9171238957601724851, guid: e8b2f94e1bcd5f840b82c75e6a339f1c, type: 3}
   - {fileID: 6595163314860514633, guid: 5297610828b23464a860170fe8cb6312, type: 3}
   - {fileID: 1401585172595861820, guid: 568189de5a3d0ba44bdeb959cebcff5b, type: 3}
+  - {fileID: 1401585172595861820, guid: 23f3774cf91d789469e5b112c3ac087b, type: 3}
   rarePowerups:
   - {fileID: 6595163314860514633, guid: d04508d76a270484b98a03876899b170, type: 3}
   enemiesToSpawn: 0

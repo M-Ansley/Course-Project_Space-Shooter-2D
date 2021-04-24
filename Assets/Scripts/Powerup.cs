@@ -15,7 +15,8 @@ public class Powerup : MonoBehaviour
         Shield,
         Ammo,
         Health,
-        Shock
+        Shock,
+        Damage
     }
 
     public PowerupType powerupType;
@@ -60,6 +61,9 @@ public class Powerup : MonoBehaviour
                 break;
             case PowerupType.Shock:
                 GameEvents.current.PowerupCollected("Shock");
+                break;
+            case PowerupType.Damage:
+                GameEvents.current.PowerupCollected("Damage");
                 break;
             default:
                 Debug.LogWarning("Case not recognised");
