@@ -7,6 +7,9 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
+    private TextMeshProUGUI _waveDisplay = null;
+
+    [SerializeField]
     private TextMeshProUGUI textBox = null;
 
     [SerializeField]
@@ -26,6 +29,14 @@ public class UIManager : MonoBehaviour
         UpdatePoints(0);
     }
 
+    // *************************************************************************************
+    // WAVES
+    public IEnumerator DisplayWave(int waveNumber, float displayDuration)
+    {
+        _waveDisplay.text = "WAVE " + waveNumber;
+        yield return new WaitForSecondsRealtime(displayDuration);
+        _waveDisplay.text = "";
+    }
 
     // *************************************************************************************
     // POINTS

@@ -10,14 +10,14 @@ public class Asteroid : MonoBehaviour
     [SerializeField]
     private GameObject _explosionPrefab = null;
 
-    private SpawnManager _spawnManager = null;
+    private GameLogic _gameLogic = null;
 
     private bool _alive = true;
 
     // Start is called before the first frame update
     void Start()
     {
-        _spawnManager = FindObjectOfType<SpawnManager>();
+        _gameLogic = FindObjectOfType<GameLogic>();
     }
 
     // Update is called once per frame
@@ -65,10 +65,10 @@ public class Asteroid : MonoBehaviour
     {
         FindObjectOfType<AudioManager>().Play("Explosion");
         GameObject explosion = Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
-        GameEvents.current.EnemyDestroyed();
+        //GameEvents.current.EnemyDestroyed();
         _alive = false;
         Destroy(explosion, 2f);
-        _spawnManager.StartSpawning();
+        _gameLogic.BeginGame();
         Destroy(this.gameObject, 0.4f);
         yield return null;
         //yield return new WaitForSecondsRealtime(2.30f);

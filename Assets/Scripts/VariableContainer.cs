@@ -14,6 +14,7 @@ public class VariableContainer
     {
         public int waveNum;
         public bool canDodge;
+        public float delayBetweenEnemies;
         public int numOfEnemies;
         public GameObject[] enemyPrefabs;
     }

@@ -16,6 +16,11 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject[] rarePowerups = null;
 
+    private Coroutine _powerupCoroutine;
+    
+    public int enemiesToSpawn = 0;   
+    public int enemiesRemaining = 0;
+
     private bool _stopSpawning = false;
 
     // Start is called before the first frame update
@@ -24,20 +29,34 @@ public class SpawnManager : MonoBehaviour
         ListenToEvents();
     }
 
-    public void StartSpawning()
+    public void StartSpawning(GameObject[] enemyPrefabs, int waveEnemies, float delayBetweenEnemies)
     {
-        StartCoroutine(SpawnEnemyRoutine());
-        StartCoroutine(SpawnPowerupRoutine());
-    }
+        _stopSpawning = false;
+        _enemyPrefabs = enemyPrefabs;
+        enemiesToSpawn = waveEnemies;
 
-    IEnumerator SpawnEnemyRoutine()
+        StartCoroutine(SpawnEnemyRoutine(delayBetweenEnemies));
+        if (_powerupCoroutine == null)
+        {
+            _powerupCoroutine = StartCoroutine(SpawnPowerupRoutine());
+        }
+    }
+    
+    IEnumerator SpawnEnemyRoutine(float delayBetweenEnemies)
     {
-        yield return new WaitForSecondsRealtime(3.0f);
+        yield return new WaitForSecondsRealtime(delayBetweenEnemies);
 
         while (!_stopSpawning)
         {
             GameObject newEnemy = Instantiate(_enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)], ReturnStartPos(), Quaternion.identity);
             newEnemy.transform.parent = _enemyContainer.transform;
+
+            enemiesRemaining++;
+            enemiesToSpawn--;
+            if (enemiesToSpawn == 0)
+            {
+                _stopSpawning = true;
+            }
             yield return new WaitForSecondsRealtime(5f);
         }
     }
@@ -46,7 +65,7 @@ public class SpawnManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(3.0f);
 
-        while (!_stopSpawning)
+        while (true)
         {
             int randomVal = Random.Range(0, 12);
             if (randomVal <= 1) // spawn a RARE powerup
@@ -77,6 +96,12 @@ public class SpawnManager : MonoBehaviour
     private void ListenToEvents()
     {
         GameEvents.current.playerDied += PlayerDied;
+        GameEvents.current.enemyDestroyed += EnemyDestroyed;
+    }
+
+    private void EnemyDestroyed()
+    {
+        enemiesRemaining--;
     }
 
     private void PlayerDied()
