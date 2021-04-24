@@ -13,7 +13,7 @@ public class Laser : MonoBehaviour
     private float minYVal = -8;
 
     [SerializeField]
-    private bool _canBeDestroyed = true;
+    private bool _destroyParent = false;
 
     private void Start()
     {
@@ -28,14 +28,15 @@ public class Laser : MonoBehaviour
             yield return null;
         }
 
-        if (gameObject.transform.parent != null)
+        if (_destroyParent)
         {
-           // Destroy(gameObject.transform.parent.gameObject);
+            if (gameObject.transform.parent != null)
+            {
+                Destroy(gameObject.transform.parent.gameObject);
+            }
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+
+        Destroy(gameObject);
     }
 }
 

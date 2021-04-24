@@ -21,10 +21,32 @@ public class Powerup : MonoBehaviour
 
     public PowerupType powerupType;
 
+    private GameObject player;
+
+    private void Start()
+    {
+        if (GameObject.FindGameObjectWithTag("Player") != null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
+        if (Input.GetKey(KeyCode.C))
+        {
+            if (player != null)
+            {
+                float step = (_multiplier * 1.5f) * Time.deltaTime;
+                transform.position = Vector3.MoveTowards(transform.position, player.transform.position, step);
+            }
+        }
+        else
+        {
+            transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
+        }
+
         if (transform.position.y < _yMinVal)
         {
             Destroy(gameObject);
@@ -35,7 +57,7 @@ public class Powerup : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            PowerupLogic();            
+            PowerupLogic();
             Destroy(gameObject);
         }
     }
