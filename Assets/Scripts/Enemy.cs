@@ -205,9 +205,7 @@ public class Enemy : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (_alive)
-        {
-            
-                      
+        {                                 
 
             // if other is Player
             if (other.CompareTag("Player"))
@@ -244,6 +242,23 @@ public class Enemy : MonoBehaviour
             else if (other.CompareTag("PlayerShockWave"))  // Nothing stops the shockwave, not even a shield
             {
                 GameEvents.current.PlayerKill(_scoreForKilling);
+                StartCoroutine(DestroySelf());
+            }
+            else if (other.CompareTag("PlayerHomingMissile"))
+            {
+                if (other.GetComponent<HomingProjectile>() != null)
+                {
+                    other.GetComponent<HomingProjectile>().Explode();
+                }
+
+                GameEvents.current.PlayerKill(_scoreForKilling);
+                if (_hasShield)
+                {
+                    FindObjectOfType<AudioManager>().Play("Explosion");
+                    _shield.SetActive(false);
+                    _hasShield = false;
+                    return;
+                }
                 StartCoroutine(DestroySelf());
             }
 

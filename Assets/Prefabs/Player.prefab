@@ -517,15 +517,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lives: 3
+  _livesMax: 3
   _speed: 6
+  _speedMultiplier: 2
   _audioSource: {fileID: 404460590}
   _laserPrefab: {fileID: 1640875581636670463, guid: 9000c70e993b13742bb4bc5518fd4231,
     type: 3}
   _fireRate: 0.15
+  _maxAmmo: 15
   _tripleShotPrefab: {fileID: 5720342744805150053, guid: c0e5ebab3b8c1664c9f9aa64421f2dfe,
     type: 3}
+  _thrustersMaxCharge: 200
+  thrustersCurrentCharge: 0
   _speedVisual: {fileID: 1286406620580757524}
   _shieldVisual: {fileID: 6821847706668007056}
+  _shieldStrength: 0
+  _shockPrefab: {fileID: 0}
+  _homingMissilePrefab: {fileID: 1667429876694701421, guid: aaeca162f7a8ca749b1e795d00d697ed,
+    type: 3}
   _engines:
   - {fileID: 1846953077}
   - {fileID: 282032932}

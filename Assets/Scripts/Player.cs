@@ -71,6 +71,9 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private int _shocksAvailable = 0;
     private bool _shockActive = false;
 
+    [Header("Homing Missile")]
+    [SerializeField] private GameObject _homingMissilePrefab = null;
+
     [Header("Engines")]
     [SerializeField]
     private GameObject[] _engines = null;
@@ -151,6 +154,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         CalculateMovement();
         Shooting();
         Thrusters();
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            Instantiate(_homingMissilePrefab, transform.position, Quaternion.identity);
+        }
     }
 
     // *******************************************************************************************

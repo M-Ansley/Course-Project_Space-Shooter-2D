@@ -8,6 +8,8 @@ TagManager:
   - EnemyLaser
   - PlayerLaser
   - PlayerShockWave
+  - PlayerHomingMissile
+  - EnemyHomingMissile
   layers:
   - Default
   - TransparentFX
