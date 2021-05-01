@@ -64,6 +64,7 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         PlayerTrackingBehaviours();
+        Raycast();
 
         if (!_ramming)
         {
@@ -143,6 +144,27 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private void Raycast()
+    {
+        if (_alive)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.TransformDirection(Vector2.down), 10f);
+
+            Debug.DrawRay(transform.position, new Vector3(0, -10f, 0), Color.red);
+
+            if (hit)
+            {
+                if (hit.collider.CompareTag("Powerup"))
+                {
+                    FireLaser();
+                  Debug.Log("Powerup detected. Firing for effect on: " + hit.collider.name);
+
+                }
+            }
+
+        }
+    }
+
     public float distance;
     private bool _playerBehind = false;
 
@@ -217,7 +239,7 @@ public class Enemy : MonoBehaviour
         Vector3 offset = target.transform.position - transform.position;
         Quaternion rotation = Quaternion.LookRotation(new Vector3(0, 0, 1), offset);
 
-        Debug.DrawRay(transform.position, offset, Color.green);
+        Debug.DrawRay(transform.position, offset, Color.red);
 
         transform.rotation = rotation; 
     }

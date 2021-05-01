@@ -60,6 +60,11 @@ public class Powerup : MonoBehaviour
             PowerupLogic();
             Destroy(gameObject);
         }
+        else if (collision.CompareTag("EnemyLaser"))
+        {
+            FindObjectOfType<AudioManager>().Play("Explosion");
+            Destroy(gameObject);
+        }
     }
 
     private void PowerupLogic()
