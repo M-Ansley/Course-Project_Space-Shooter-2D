@@ -98,6 +98,9 @@ public class Enemy : MonoBehaviour
                     break;
 
                 default:
+                    transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
+                    if (_sideToSide)
+                        SideToSide();
                     break;
             }
 
@@ -141,6 +144,7 @@ public class Enemy : MonoBehaviour
     }
 
     public float distance;
+    private bool _playerBehind = false;
 
     private void TrackPosition()
     {
@@ -154,6 +158,15 @@ public class Enemy : MonoBehaviour
 
             }
         }
+
+        if (gameObject.transform.position.y < _player.gameObject.transform.position.y) // player is behind.
+        {
+            _playerBehind = true;
+        }
+        else
+        {
+            _playerBehind = false;
+        }
     }
 
     private Coroutine _ramPlayerCor = null;
@@ -162,7 +175,6 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator RamPlayer()
     {
-        Debug.Log("Ramming");
 
         _ramming = true;
         if (_flipSprite)
@@ -288,14 +300,28 @@ public class Enemy : MonoBehaviour
 
     private void FireLaser()
     {
-        Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y - 1.902f, transform.position.z);
-        GameObject laser = Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
-        laser.transform.Rotate(0, 0, -180);
+        if (enemyType == EnemyType.Smart && _playerBehind)
+        {
+            Debug.Log("Firing behind");
+            Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z);
+            GameObject laser = Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
+           // laser.transform.Rotate(0, 0, -180);
+        }
+        else
+        {
+            Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y - 1.902f, transform.position.z);
+            GameObject laser = Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
+            laser.transform.Rotate(0, 0, -180);
+        }
+
+       
     }
 
     // For BEAMER enemy types
     private IEnumerator FireBeam(float duration)
     {
+       
+
         Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y - 21f, transform.position.z);
         _beam = Instantiate(_beamPrefab, positionOffset, Quaternion.identity);
         _beam.transform.parent = this.gameObject.transform;
