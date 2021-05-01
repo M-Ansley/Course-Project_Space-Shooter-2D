@@ -55,7 +55,7 @@ public class GameLogic : MonoBehaviour
             yield return new WaitForSecondsRealtime(2f);
             spawnManager.StartSpawning(currentWave.enemyPrefabs, currentWave.numOfEnemies, currentWave.delayBetweenEnemies);
             waveComplete = false;            
-            while (!waveComplete)
+            while (!waveComplete) 
             {
                 yield return null;
             }
@@ -75,7 +75,7 @@ public class GameLogic : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-        else if(Input.GetKeyDown(KeyCode.Escape))
+        else if(Input.GetButtonDown("Escape"))
         {
             Application.Quit();
         }

@@ -89,20 +89,17 @@ public class HomingProjectile : MonoBehaviour
 
     private void FaceTarget()
     {
-        //var targetRotation = Quaternion.LookRotation(_target.transform.position - transform.position);
-        //var str = Mathf.Min(0.5f * Time.deltaTime, 1);
-        //transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, str);
-
         Vector3 offset = _target.transform.position - transform.position;
 
-        // Construct a rotation as in the y+ case.
-        Quaternion rotation = Quaternion.LookRotation(
-                                  new Vector3(0, 0, 1),
-                                  offset
-                              );
+        //Quaternion rotation = Quaternion.LookRotation(new Vector3(0, 0, 1), offset);
+        Quaternion rotation = Quaternion.LookRotation(new Vector3(0, 0, 1), offset);
+
+        //Quaternion rotation = Quaternion.LookRotation(offset);
+
+        Debug.DrawRay(transform.position, offset, Color.green);
 
         // Apply a compensating rotation that twists x+ to y+ before the rotation above.
-        transform.rotation = rotation * Quaternion.Euler(0, 0, 0);
+        transform.rotation = rotation; //* Quaternion.Euler(0, 0, 0);
     }
 
 

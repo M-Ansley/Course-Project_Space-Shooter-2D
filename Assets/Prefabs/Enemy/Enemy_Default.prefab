@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1152291775110030979}
   - component: {fileID: 5752482067447214934}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Enemy_Default
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,12 +47,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd8e1292d844c834aa185909bbf33554, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 0
   _collider: {fileID: 1152291775110030979}
   _laserPrefab: {fileID: 3162513824809178844, guid: 75e91e19c23c0d1459bc6fc8eebebf85,
     type: 3}
+  _beamPrefab: {fileID: 0}
+  _hasShield: 0
+  _shield: {fileID: 0}
   animator: {fileID: 5752482067447214934}
   _scoreForKilling: 50
   _multiplier: 4
+  _rammingOn: 1
+  _distanceForRamming: 3
+  _spriteRenderer: {fileID: 8210545967947877971}
+  distance: 0
 --- !u!212 &8210545967947877971
 SpriteRenderer:
   m_ObjectHideFlags: 0

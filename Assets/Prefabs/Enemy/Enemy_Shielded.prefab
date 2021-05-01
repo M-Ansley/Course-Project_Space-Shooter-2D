@@ -159,6 +159,10 @@ MonoBehaviour:
   animator: {fileID: 5752482067447214934}
   _scoreForKilling: 50
   _multiplier: 4
+  _rammingOn: 1
+  _distanceForRamming: 3
+  _spriteRenderer: {fileID: 8210545967947877971}
+  distance: 0
 --- !u!212 &8210545967947877971
 SpriteRenderer:
   m_ObjectHideFlags: 0

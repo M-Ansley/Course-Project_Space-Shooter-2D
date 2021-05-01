@@ -7,31 +7,22 @@ public class Enemy : MonoBehaviour
 {
     public EnemyType enemyType;
 
-    [SerializeField]
-    private BoxCollider2D _collider = null;
+    [SerializeField] private BoxCollider2D _collider = null;
 
-    [SerializeField]
-    private GameObject _laserPrefab = null;
-
-    [SerializeField]
-    private GameObject _beamPrefab = null;
+    [SerializeField] private GameObject _laserPrefab = null;
+    [SerializeField] private GameObject _beamPrefab = null;
 
     private GameObject _beam = null;
 
-    [SerializeField]
-    private bool _hasShield = false;
+    [SerializeField] private bool _hasShield = false;
 
-    [SerializeField]
-    private GameObject _shield = null;
+    [SerializeField] private GameObject _shield = null;
 
-    [SerializeField]
-    private Animator animator = null;
+    [SerializeField] private Animator animator = null;
 
-    [SerializeField]
-    private int _scoreForKilling = 50;
+    [SerializeField] private int _scoreForKilling = 50;
 
-    [SerializeField]
-    private float _multiplier = 4f;
+    [SerializeField] private float _multiplier = 4f;
 
     private float _startingYVal = 7;
     private float _yMinVal = -6;
@@ -50,6 +41,13 @@ public class Enemy : MonoBehaviour
     private Coroutine _fireCoroutine;
     private Coroutine _beamCoroutine;
 
+    private GameObject _player = null;
+
+    [SerializeField] private bool _rammingOn = true;
+    [SerializeField] private float _distanceForRamming = 2f;
+    [SerializeField] private SpriteRenderer _spriteRenderer = null;
+    private bool _flipSprite = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,34 +63,46 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        switch (enemyType)
+        PlayerTrackingBehaviours();
+
+        if (!_ramming)
         {
-            case EnemyType.Default:
-                transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
-                if (_sideToSide)
-                    SideToSide();
-                break;
+            if (_flipSprite)
+            {
+                _spriteRenderer.flipY = false;
+            }
 
-            case EnemyType.Beamer:
-                if (transform.position.x < _minXVal || transform.position.z > _maxXVal)
-                {
-                    _moveLeft = !_moveLeft;
-                }
+            switch (enemyType)
+            {
+                case EnemyType.Default:
+                    transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
+                    if (_sideToSide)
+                        SideToSide();
+                    break;
 
-                if (_moveLeft)
-                {
-                    transform.Translate(new Vector3(-0.5f, -0.5f, 0) * _multiplier * Time.deltaTime);
+                case EnemyType.Beamer:
+                    if (transform.position.x < _minXVal || transform.position.z > _maxXVal)
+                    {
+                        _moveLeft = !_moveLeft;
+                    }
 
-                }
-                else
-                {
-                    transform.Translate(new Vector3(0.5f, -0.5f, 0) * _multiplier * Time.deltaTime);
-                }
-                break;
+                    if (_moveLeft)
+                    {
+                        transform.Translate(new Vector3(-0.5f, -0.5f, 0) * _multiplier * Time.deltaTime);
 
-            default:
-                break;
+                    }
+                    else
+                    {
+                        transform.Translate(new Vector3(0.5f, -0.5f, 0) * _multiplier * Time.deltaTime);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+
         }
+
 
 
         if (_alive && transform.position.y < _yMinVal)
@@ -103,6 +113,101 @@ public class Enemy : MonoBehaviour
                 _moveLeft = !_moveLeft; // reverse their direction
             }
         }
+    }
+
+    private bool playerAvailable = true;
+
+    private void PlayerTrackingBehaviours()
+    {
+        if (playerAvailable)
+        {
+            if (_player != null)
+            {
+                TrackPosition();
+            }
+            else
+            {
+                if (FindObjectOfType<Player>() != null)
+                {
+                    _player = FindObjectOfType<Player>().gameObject;
+                }
+                else // player is presumably dead; stop searching.
+                {
+                    Debug.Log("Player could not be found in scene");
+                    playerAvailable = false;
+                }
+            }
+        }
+    }
+
+    public float distance;
+
+    private void TrackPosition()
+    {
+        distance = Vector3.Distance(gameObject.transform.position, _player.gameObject.transform.position);
+
+        if (distance <= _distanceForRamming)
+        {
+            if (!_ramming)
+            {
+                _ramPlayerCor = StartCoroutine(RamPlayer());
+
+            }
+        }
+    }
+
+    private Coroutine _ramPlayerCor = null;
+    private bool _ramming = false;
+    private bool _hitDealt = false;
+
+    private IEnumerator RamPlayer()
+    {
+        Debug.Log("Ramming");
+
+        _ramming = true;
+        if (_flipSprite)
+        {
+            _spriteRenderer.flipY = true;
+        }
+
+        while (_player != null && distance <= _distanceForRamming && _alive && !_hitDealt)
+        {
+            float step = _multiplier * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, step);
+            FaceTarget(_player);
+            yield return null;
+        }
+       
+        transform.rotation = Quaternion.identity;
+
+        _ramming = false;
+    }
+
+
+    private IEnumerator ReturnToFacingDown()
+    {
+        Quaternion startRotation = transform.rotation;
+        Quaternion endRoation = Quaternion.identity;
+        float elapsedTime = 0f;
+
+        while (transform.rotation != endRoation)
+        {
+            transform.rotation = Quaternion.Lerp(startRotation, endRoation, (elapsedTime / 2f));
+            elapsedTime += Time.deltaTime;
+        }
+        yield return null;
+    }
+
+
+    private void FaceTarget(GameObject target)
+    {
+
+        Vector3 offset = target.transform.position - transform.position;
+        Quaternion rotation = Quaternion.LookRotation(new Vector3(0, 0, 1), offset);
+
+        Debug.DrawRay(transform.position, offset, Color.green);
+
+        transform.rotation = rotation; 
     }
 
     private void RespawnAtTop()
@@ -205,7 +310,7 @@ public class Enemy : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (_alive)
-        {                                 
+        {
 
             // if other is Player
             if (other.CompareTag("Player"))
@@ -215,6 +320,7 @@ public class Enemy : MonoBehaviour
                 {
                     print(gameObject.name);
                     other.GetComponent<Player>().DamagePlayer();
+                    _hitDealt = true;
                 }
 
                 if (_hasShield)
@@ -224,6 +330,7 @@ public class Enemy : MonoBehaviour
                     _hasShield = false;
                     return;
                 }
+                _hitDealt = false;
                 StartCoroutine(DestroySelf());
             }
             else if (other.CompareTag("PlayerLaser"))

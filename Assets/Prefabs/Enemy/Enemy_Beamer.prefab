@@ -53,9 +53,15 @@ MonoBehaviour:
     type: 3}
   _beamPrefab: {fileID: 6668859881484074507, guid: e1f4088b1d5a9cf49a2a31cbed1e09ed,
     type: 3}
+  _hasShield: 0
+  _shield: {fileID: 0}
   animator: {fileID: 5752482067447214934}
   _scoreForKilling: 50
   _multiplier: 4
+  _rammingOn: 1
+  _distanceForRamming: 3
+  _spriteRenderer: {fileID: 8210545967947877971}
+  distance: 0
 --- !u!212 &8210545967947877971
 SpriteRenderer:
   m_ObjectHideFlags: 0
