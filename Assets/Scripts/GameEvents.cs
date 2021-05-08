@@ -111,4 +111,22 @@ public class GameEvents : MonoBehaviour
     }
 
 
+    [System.Serializable]
+    public class MyBoolEvent : UnityEvent<bool>
+    {
+
+    }
+
+    public MyBoolEvent bossAlive;
+
+    public void BossAlive(bool alive)
+    {
+        if (bossAlive != null)
+        {
+            bossAlive.Invoke(alive);
+        }
+    }
+
+
+
 }

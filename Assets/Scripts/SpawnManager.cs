@@ -10,6 +10,9 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject[] _enemyPrefabs = null;
 
+    [SerializeField] private GameObject _bossPrefab = null;
+    [SerializeField] private Vector3 _bossStartPos = new Vector3();
+
     [SerializeField]
     private GameObject[] powerups = null;
 
@@ -17,8 +20,8 @@ public class SpawnManager : MonoBehaviour
     private GameObject[] rarePowerups = null;
 
     private Coroutine _powerupCoroutine;
-    
-    public int enemiesToSpawn = 0;   
+
+    public int enemiesToSpawn = 0;
     public int enemiesRemaining = 0;
 
     private bool _stopSpawning = false;
@@ -41,7 +44,7 @@ public class SpawnManager : MonoBehaviour
             _powerupCoroutine = StartCoroutine(SpawnPowerupRoutine());
         }
     }
-    
+
     IEnumerator SpawnEnemyRoutine(float delayBetweenEnemies)
     {
         yield return new WaitForSecondsRealtime(delayBetweenEnemies);
@@ -91,12 +94,26 @@ public class SpawnManager : MonoBehaviour
         return startPos;
     }
 
+
+
+    // BOSS
+    private void SpawnBoss(bool bossStatus)
+    {
+        if (bossStatus)
+        {
+            Instantiate(_bossPrefab, _bossStartPos, Quaternion.identity);
+        }
+    }
+
+
+
     // *******************************************************************************************
     // EVENTS
     private void ListenToEvents()
     {
         GameEvents.current.playerDied += PlayerDied;
         GameEvents.current.enemyDestroyed += EnemyDestroyed;
+        GameEvents.current.bossAlive.AddListener(SpawnBoss);
     }
 
     private void EnemyDestroyed()

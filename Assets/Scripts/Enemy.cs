@@ -194,23 +194,17 @@ public class Enemy : MonoBehaviour
     private IEnumerator Dodge(float dodgeDuration)
     {
         _dodging = true;
-        Vector3 newPosition;
+        Vector3 startPosition = transform.position;
+        Vector3 newPosition = startPosition + new Vector3(3, 1.5f, 0); // set to move right by default
 
-        // Move either left or right
+        // Chance to move left instead
         float randomNum = Random.Range(0, 1);
-        if (randomNum >= 0.5) // move right
-        {
-            newPosition = transform.position + new Vector3(3, 1.5f, 0);
-        }
-        else
+        if (randomNum >= 0.5)
         {
             newPosition = transform.position + new Vector3(-3, 1.5f, 0);
         }
-
         
-        Vector3 startPosition = transform.position;
         float elapsedTime = 0;
-
         while (transform.position != newPosition)
         {
             transform.position = Vector3.Lerp(startPosition, newPosition, (elapsedTime / dodgeDuration));

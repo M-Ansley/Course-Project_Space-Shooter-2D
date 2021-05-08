@@ -6,16 +6,14 @@ using static VariableContainer;
 
 public class GameLogic : MonoBehaviour
 {
-    private bool _gameRunning = true;
-
-    public Wave[] waves;
-
-    public Queue<Wave> wavesQueue = new Queue<Wave>();
-
     public SpawnManager spawnManager;
     public UIManager uiManager;
 
-    public bool waveComplete = false;
+    private bool _gameRunning = true;
+
+    public Wave[] waves;
+    public Queue<Wave> wavesQueue = new Queue<Wave>();
+    public bool waveComplete = false;    
 
     private void Start()
     {
@@ -64,9 +62,28 @@ public class GameLogic : MonoBehaviour
         }
         else
         {
-            Debug.Log("No waves remain");
+            StartCoroutine(RunBossRound());
         }
 
+    }
+
+    private bool bossAlive = false;
+
+    private IEnumerator RunBossRound()
+    {
+        GameEvents.current.BossAlive(true);
+        while (bossAlive)
+        {
+            yield return null;
+        }
+
+        Debug.Log("Boss defeated!");
+
+    }
+
+    private void BossStatus(bool alive)
+    {
+        bossAlive = alive;
     }
 
     private void Toggles()
@@ -89,6 +106,7 @@ public class GameLogic : MonoBehaviour
     private void ListenToEvents()
     {
         GameEvents.current.playerDied += GameOver;
+        GameEvents.current.bossAlive.AddListener(BossStatus);
     }
 
    

@@ -153,6 +153,9 @@ MonoBehaviour:
   _enemyContainer: {fileID: 1592532960}
   _enemyPrefabs:
   - {fileID: 2637729078673077350, guid: 951852bde8afca642a9ca6ebd279189b, type: 3}
+  _bossPrefab: {fileID: 949344073026419408, guid: 073bb94b8543f364f92dda2f0976979b,
+    type: 3}
+  _bossStartPos: {x: 0, y: 13, z: 0}
   powerups:
   - {fileID: 222692309332165909, guid: cfd074c41c2400c4d8d868cefb35c736, type: 3}
   - {fileID: 2538059525392262142, guid: dffc21db6f25dbf41a2efd8cbeb4f79c, type: 3}
@@ -229,6 +232,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   playerKill:
+    m_PersistentCalls:
+      m_Calls: []
+  bossAlive:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &61929430
@@ -1104,6 +1110,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea4217ba4f5378e4c846d9549a5481ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnManager: {fileID: 26707193}
+  uiManager: {fileID: 977337788}
   waves:
   - waveNum: 1
     canDodge: 0
@@ -1126,8 +1134,6 @@ MonoBehaviour:
     numOfEnemies: 15
     enemyPrefabs:
     - {fileID: 2637729078673077350, guid: 951852bde8afca642a9ca6ebd279189b, type: 3}
-  spawnManager: {fileID: 26707193}
-  uiManager: {fileID: 977337788}
   waveComplete: 0
 --- !u!4 &603346553
 Transform:
@@ -2624,7 +2630,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -80.899994, y: 19.9}
+  m_AnchoredPosition: {x: -80.899994, y: 19.900024}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2060703398
