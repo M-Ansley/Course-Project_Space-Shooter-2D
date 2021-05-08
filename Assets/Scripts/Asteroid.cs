@@ -65,6 +65,7 @@ public class Asteroid : MonoBehaviour
     {
         FindObjectOfType<AudioManager>().Play("Explosion");
         GameObject explosion = Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
+        GameEvents.current.AsteroidDestroyed();
         //GameEvents.current.EnemyDestroyed();
         _alive = false;
         Destroy(explosion, 2f);

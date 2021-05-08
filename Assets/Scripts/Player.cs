@@ -47,6 +47,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private GameObject _tripleShotPrefab = null;
 
     [Header("Thrusters")]
+    [SerializeField] private GameObject _thrustersObject;
     [SerializeField]
     private float _thrustersMaxCharge = 200;
     public float thrustersCurrentCharge;
@@ -95,6 +96,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     private void VariableSetup()
     {
+        _thrustersObject.SetActive(false);
         _shieldVisual.SetActive(false);
         _speedVisual.SetActive(false);
         transform.position = new Vector3(0, 0, 0);
@@ -588,6 +590,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     }
 
 
+    private void AsteroidDestroyed()
+    {
+        _thrustersObject.SetActive(true);
+    }
 
 
     // *******************************************************************************************
@@ -596,11 +602,13 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private void ListenToEvents()
     {
         GameEvents.current.powerupCollected.AddListener(PowerupCollected);
+        GameEvents.current.asteroidDestroyed += AsteroidDestroyed;
     }
 
     private void UnlistenToEvents()
     {
         GameEvents.current.powerupCollected.RemoveListener(PowerupCollected);
+        GameEvents.current.asteroidDestroyed -= AsteroidDestroyed;
     }
 
     // ********************************************************************************************

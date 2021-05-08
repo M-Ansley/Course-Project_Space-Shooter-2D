@@ -86,8 +86,7 @@ public class GameEvents : MonoBehaviour
     public event Action laserFired;
 
     public void LaserFired()
-    {
-        
+    {        
         if (laserFired != null)
         {
             laserFired();
@@ -107,6 +106,17 @@ public class GameEvents : MonoBehaviour
         if (playerKill != null)
         {
             playerKill.Invoke(score);
+        }
+    }
+
+
+    public event Action asteroidDestroyed;
+
+    public void AsteroidDestroyed()
+    {
+        if (asteroidDestroyed != null)
+        {
+            asteroidDestroyed();
         }
     }
 
