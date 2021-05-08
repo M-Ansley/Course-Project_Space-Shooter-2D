@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour
         PlayerTrackingBehaviours();
         Raycast();
 
-        if (!_ramming)
+        if (!_ramming && !_dodging)
         {
             if (_flipSprite)
             {
@@ -75,30 +75,11 @@ public class Enemy : MonoBehaviour
 
             switch (enemyType)
             {
-                case EnemyType.Default:
-                    transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
-                    if (_sideToSide)
-                        SideToSide();
-                    break;
-
                 case EnemyType.Beamer:
-                    if (transform.position.x < _minXVal || transform.position.z > _maxXVal)
-                    {
-                        _moveLeft = !_moveLeft;
-                    }
-
-                    if (_moveLeft)
-                    {
-                        transform.Translate(new Vector3(-0.5f, -0.5f, 0) * _multiplier * Time.deltaTime);
-
-                    }
-                    else
-                    {
-                        transform.Translate(new Vector3(0.5f, -0.5f, 0) * _multiplier * Time.deltaTime);
-                    }
+                    BeamerMovementBehaviour();
                     break;
 
-                default:
+                default:                    
                     transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
                     if (_sideToSide)
                         SideToSide();
@@ -116,6 +97,24 @@ public class Enemy : MonoBehaviour
             {
                 _moveLeft = !_moveLeft; // reverse their direction
             }
+        }
+    }
+
+    private void BeamerMovementBehaviour()
+    {
+        if (transform.position.x < _minXVal || transform.position.z > _maxXVal)
+        {
+            _moveLeft = !_moveLeft;
+        }
+
+        if (_moveLeft)
+        {
+            transform.Translate(new Vector3(-0.5f, -0.5f, 0) * _multiplier * Time.deltaTime);
+
+        }
+        else
+        {
+            transform.Translate(new Vector3(0.5f, -0.5f, 0) * _multiplier * Time.deltaTime);
         }
     }
 
@@ -156,13 +155,69 @@ public class Enemy : MonoBehaviour
             {
                 if (hit.collider.CompareTag("Powerup"))
                 {
-                    FireLaser();
-                  Debug.Log("Powerup detected. Firing for effect on: " + hit.collider.name);
+                    if (_rayCastActive)
+                    {
+                        FireLaser();
+                        StartCoroutine(RaycastHitCooldown(2f));
+                    }
 
+                }
+                if (hit.collider.CompareTag("PlayerLaser"))
+                {
+                    if (enemyType == EnemyType.Smart) // then dodge it
+                    {
+                        if (_rayCastActive)
+                        {
+                            StartCoroutine(Dodge(.5f));
+                            StartCoroutine(RaycastHitCooldown(2f));
+                        }
+                    }
                 }
             }
 
         }
+    }
+
+    private bool _rayCastActive = true;
+
+    private IEnumerator RaycastHitCooldown(float duration)
+    {
+        _rayCastActive = false;
+        yield return new WaitForSecondsRealtime(duration);
+        _rayCastActive = true;
+
+    }
+
+
+    private bool _dodging = false;
+
+    private IEnumerator Dodge(float dodgeDuration)
+    {
+        _dodging = true;
+        Vector3 newPosition;
+
+        // Move either left or right
+        float randomNum = Random.Range(0, 1);
+        if (randomNum >= 0.5) // move right
+        {
+            newPosition = transform.position + new Vector3(3, 1.5f, 0);
+        }
+        else
+        {
+            newPosition = transform.position + new Vector3(-3, 1.5f, 0);
+        }
+
+        
+        Vector3 startPosition = transform.position;
+        float elapsedTime = 0;
+
+        while (transform.position != newPosition)
+        {
+            transform.position = Vector3.Lerp(startPosition, newPosition, (elapsedTime / dodgeDuration));
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        _dodging = false;
     }
 
     public float distance;
@@ -211,7 +266,7 @@ public class Enemy : MonoBehaviour
             FaceTarget(_player);
             yield return null;
         }
-       
+
         transform.rotation = Quaternion.identity;
 
         _ramming = false;
@@ -235,13 +290,12 @@ public class Enemy : MonoBehaviour
 
     private void FaceTarget(GameObject target)
     {
-
         Vector3 offset = target.transform.position - transform.position;
         Quaternion rotation = Quaternion.LookRotation(new Vector3(0, 0, 1), offset);
 
         Debug.DrawRay(transform.position, offset, Color.red);
 
-        transform.rotation = rotation; 
+        transform.rotation = rotation;
     }
 
     private void RespawnAtTop()
@@ -327,7 +381,7 @@ public class Enemy : MonoBehaviour
             Debug.Log("Firing behind");
             Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z);
             GameObject laser = Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
-           // laser.transform.Rotate(0, 0, -180);
+            // laser.transform.Rotate(0, 0, -180);
         }
         else
         {
@@ -336,14 +390,12 @@ public class Enemy : MonoBehaviour
             laser.transform.Rotate(0, 0, -180);
         }
 
-       
+
     }
 
     // For BEAMER enemy types
     private IEnumerator FireBeam(float duration)
     {
-       
-
         Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y - 21f, transform.position.z);
         _beam = Instantiate(_beamPrefab, positionOffset, Quaternion.identity);
         _beam.transform.parent = this.gameObject.transform;
