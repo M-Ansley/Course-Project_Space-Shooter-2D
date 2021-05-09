@@ -68,6 +68,10 @@ public class HomingProjectile : MonoBehaviour
             {
                 _target = FindObjectOfType<Enemy>().gameObject;
             }
+            else if (FindObjectOfType<Boss>()  != null)
+            {
+                _target = FindObjectOfType<Boss>().gameObject;
+            }
             else // no enemy -- fly off
             {
                 gameObject.transform.Translate(new Vector3(0, 1, 0) * _multiplier * Time.deltaTime);

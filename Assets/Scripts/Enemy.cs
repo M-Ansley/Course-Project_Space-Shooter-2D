@@ -65,8 +65,13 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        PlayerTrackingBehaviours();
-        Raycast();
+        if (enemyType == EnemyType.Smart)
+        {
+            PlayerTrackingBehaviours();
+        
+            Raycast();
+
+        }
 
         if (!_ramming && !_dodging)
         {
@@ -81,7 +86,7 @@ public class Enemy : MonoBehaviour
                     BeamerMovementBehaviour();
                     break;
 
-                default:                    
+                default:
                     transform.Translate(Vector3.down * _multiplier * Time.deltaTime);
                     if (_sideToSide)
                         SideToSide();
@@ -205,7 +210,7 @@ public class Enemy : MonoBehaviour
         {
             newPosition = transform.position + new Vector3(-3, 1.5f, 0);
         }
-        
+
         float elapsedTime = 0;
         while (transform.position != newPosition)
         {
@@ -392,10 +397,10 @@ public class Enemy : MonoBehaviour
     // For BEAMER enemy types
     private IEnumerator FireBeam(float duration)
     {
+        Debug.Log("Should fire beam");
         Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y - 21f, transform.position.z);
         _beam = Instantiate(_beamPrefab, positionOffset, Quaternion.identity);
         _beam.transform.parent = this.gameObject.transform;
-        //FindObjectOfType<AudioManager>().Play("Beam");
         yield return new WaitForSecondsRealtime(duration);
         if (_beam != null)
         {
@@ -431,7 +436,6 @@ public class Enemy : MonoBehaviour
             else if (other.CompareTag("PlayerLaser"))
             {
                 Destroy(other.gameObject);
-                GameEvents.current.PlayerKill(_scoreForKilling);
                 if (_hasShield)
                 {
                     FindObjectOfType<AudioManager>().Play("Explosion");
@@ -439,6 +443,7 @@ public class Enemy : MonoBehaviour
                     _hasShield = false;
                     return;
                 }
+                GameEvents.current.PlayerKill(_scoreForKilling);
                 StartCoroutine(DestroySelf());
             }
             else if (other.CompareTag("PlayerShockWave"))  // Nothing stops the shockwave, not even a shield

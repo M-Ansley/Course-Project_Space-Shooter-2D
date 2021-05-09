@@ -173,7 +173,6 @@ GameObject:
   - component: {fileID: 6668859881484074506}
   - component: {fileID: 6668859881484074548}
   - component: {fileID: 6668859881484074549}
-  - component: {fileID: 3565603035554360121}
   - component: {fileID: 5757567845122791262}
   m_Layer: 0
   m_Name: Enemy_Beam
@@ -245,21 +244,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.5370668, y: 19.84019}
   m_EdgeRadius: 0
---- !u!114 &3565603035554360121
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6668859881484074507}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9b2bc8695b770847b76051654c888c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _multiplier: 0
-  maxYVal: 8
-  _canBeDestroyed: 1
 --- !u!82 &5757567845122791262
 AudioSource:
   m_ObjectHideFlags: 0
