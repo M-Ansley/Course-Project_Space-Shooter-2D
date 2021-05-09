@@ -153,7 +153,7 @@ MonoBehaviour:
   _enemyContainer: {fileID: 1592532960}
   _enemyPrefabs:
   - {fileID: 2637729078673077350, guid: 951852bde8afca642a9ca6ebd279189b, type: 3}
-  _bossPrefab: {fileID: 949344073026419408, guid: 073bb94b8543f364f92dda2f0976979b,
+  _bossPrefab: {fileID: 949344073026419408, guid: 2ee8ff1f512d55344a80882acf5c29db,
     type: 3}
   _bossStartPos: {x: 0, y: 13, z: 0}
   powerups:
@@ -165,6 +165,7 @@ MonoBehaviour:
   rarePowerups:
   - {fileID: 6595163314860514633, guid: d04508d76a270484b98a03876899b170, type: 3}
   - {fileID: 1401585172595861820, guid: 568189de5a3d0ba44bdeb959cebcff5b, type: 3}
+  - {fileID: 6595163314860514633, guid: 52601b9dc693956498a0782e3f499d01, type: 3}
   enemiesToSpawn: 0
   enemiesRemaining: 0
 --- !u!4 &26707194

@@ -74,6 +74,8 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private bool _shockActive = false;
 
     [Header("Homing Missile")]
+    private bool _missilesActive = false;
+    private int _missilesAvailable = 0;
     [SerializeField] private GameObject _homingMissilePrefab = null;
 
     [Header("Engines")]
@@ -158,10 +160,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         CalculateMovement();
         Shooting();
         Thrusters();
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            Instantiate(_homingMissilePrefab, transform.position, Quaternion.identity);
-        }
+        //if (Input.GetKeyDown(KeyCode.M))
+        //{
+        //    Instantiate(_homingMissilePrefab, transform.position, Quaternion.identity);
+        //}
     }
 
     // *******************************************************************************************
@@ -289,7 +291,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     {
         _currentAmmo--;
         _nextFire = Time.time + _fireRate;
-        if (!_tripleShotActive && !_shockActive)
+        if (!_tripleShotActive && !_shockActive && !_missilesActive)
         {
             Vector3 positionOffset = new Vector3(transform.position.x, transform.position.y + 1.25f, transform.position.z);
             Instantiate(_laserPrefab, positionOffset, Quaternion.identity);
@@ -318,6 +320,21 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
             }
 
         }
+        else if (_missilesActive)
+        {
+            if (_missilesAvailable > 0)
+            {
+                Instantiate(_homingMissilePrefab, transform.position, Quaternion.identity);
+                _missilesAvailable--;
+            }
+
+            if (_missilesAvailable == 0)
+            {
+
+                _missilesActive = false;
+            }
+        }
+
 
 
     }
@@ -414,6 +431,10 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
             case "Triple_Shot":
                 RefillAmmo();
                 TripleShotActive();
+                break;
+            case "Missiles":
+                RefillAmmo();
+                MissilesActive();
                 break;
             case "Speed":
                 SpeedActive();
@@ -571,6 +592,20 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
         yield return new WaitForSecondsRealtime(delay);
         _shocksAvailable = 0;
         _shockActive = false;
+    }
+
+    private void MissilesActive()
+    {
+        _missilesAvailable = 3;
+        _missilesActive = true;
+        StartCoroutine(MissilesPowerDownRoutine(10f));
+    }
+
+    IEnumerator MissilesPowerDownRoutine(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        _missilesAvailable = 0;
+        _missilesActive = false;
     }
 
 

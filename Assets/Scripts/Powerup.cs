@@ -16,7 +16,8 @@ public class Powerup : MonoBehaviour
         Ammo,
         Health,
         Shock,
-        Damage
+        Damage,
+        Missiles
     }
 
     public PowerupType powerupType;
@@ -91,6 +92,9 @@ public class Powerup : MonoBehaviour
                 break;
             case PowerupType.Damage:
                 GameEvents.current.PowerupCollected("Damage");
+                break;
+            case PowerupType.Missiles:
+                GameEvents.current.PowerupCollected("Missiles");
                 break;
             default:
                 Debug.LogWarning("Case not recognised");
