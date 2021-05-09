@@ -5,6 +5,7 @@ using static VariableContainer;
 
 public class Enemy : MonoBehaviour
 {
+#pragma warning disable 0649
     public EnemyType enemyType;
 
     [SerializeField] private BoxCollider2D _collider = null;
@@ -43,6 +44,7 @@ public class Enemy : MonoBehaviour
 
     private GameObject _player = null;
 
+#pragma warning disable 0649
     [SerializeField] private bool _rammingOn = true;
     [SerializeField] private float _distanceForRamming = 2f;
     [SerializeField] private SpriteRenderer _spriteRenderer = null;
@@ -412,7 +414,6 @@ public class Enemy : MonoBehaviour
                 Player player = other.transform.GetComponent<Player>();
                 if (player != null)
                 {
-                    print(gameObject.name);
                     other.GetComponent<Player>().DamagePlayer();
                     _hitDealt = true;
                 }

@@ -94,7 +94,13 @@ public class SpawnManager : MonoBehaviour
         return startPos;
     }
 
-
+    public void StopAllRoutines()
+    {
+        if (_powerupCoroutine != null)
+        {
+            StopCoroutine(_powerupCoroutine);
+        }
+    }
 
     // BOSS
     private void SpawnBoss(bool bossStatus)

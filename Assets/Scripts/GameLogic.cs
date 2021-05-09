@@ -57,7 +57,6 @@ public class GameLogic : MonoBehaviour
             {
                 yield return null;
             }
-            Debug.Log("Wave complete");
             StartCoroutine(LoadWave(2f));
         }
         else
@@ -78,6 +77,8 @@ public class GameLogic : MonoBehaviour
         }
 
         Debug.Log("Boss defeated!");
+        spawnManager.StopAllRoutines();
+        StartCoroutine(uiManager.Outro());
 
     }
 

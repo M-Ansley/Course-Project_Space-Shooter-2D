@@ -11,6 +11,7 @@ TagManager:
   - PlayerHomingMissile
   - EnemyHomingMissile
   - Powerup
+  - BossLaser
   layers:
   - Default
   - TransparentFX

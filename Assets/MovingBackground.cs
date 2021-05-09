@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+#pragma warning disable 0649
 public class MovingBackground : MonoBehaviour
 {
+
     [Tooltip("How long it takes to get from start to end pos")]
     [SerializeField] private float _moveDuration = 4f;
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+#pragma warning disable 0649
 public class Player : MonoBehaviour // Player inherits or extends monobehaviour. Lets us drag and drop them onto gameobjects, in order to control them.
 {
     // public or private. If private, only this class knows it exists.
@@ -78,6 +79,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     [Header("Engines")]
     [SerializeField]
     private GameObject[] _engines = null;
+#pragma warning disable 0649
     private int _activeThrusterNum = 0;
     [SerializeField]
     private List<int> _nums = null;
@@ -404,7 +406,6 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     // POWERUPS
     public void PowerupCollected(string powerupName)
     {
-        Debug.Log(powerupName + " collected");
         if (powerupName != "Damage" && _audioManager != null)
             _audioManager.Play("Power-Up");
 
@@ -427,6 +428,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
                 AddHealth();
                 break;
             case "Shock":
+                RefillAmmo();
                 EnableShock();
                 break;
             case "Damage":
@@ -454,7 +456,6 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     // SPEED
     private void SpeedActive()
     {
-        print("Speed active");
         StopThrusters();
         // thrustersOn = false;
         // _speed = _originalSpeed;
@@ -469,7 +470,6 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
 
     IEnumerator SpeedPowerDownRoutine(float delay)
     {
-        print("Speed inactive");
         yield return new WaitForSecondsRealtime(delay);
         _speed /= _speedMultiplier;
         _speedVisual.SetActive(false);
@@ -577,7 +577,7 @@ public class Player : MonoBehaviour // Player inherits or extends monobehaviour.
     private void OnTriggerEnter2D(Collider2D other)
     {
 
-        if (other.CompareTag("EnemyLaser"))
+        if (other.CompareTag("EnemyLaser") || other.CompareTag("BossLaser"))
         {
             Destroy(other.gameObject);
 

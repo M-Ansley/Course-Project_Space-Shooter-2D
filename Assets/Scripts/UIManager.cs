@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
+#pragma warning disable 0649
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private Image _fadePanel;
+
     [SerializeField]
     private TextMeshProUGUI _waveDisplay = null;
 
@@ -38,6 +42,35 @@ public class UIManager : MonoBehaviour
         _waveDisplay.text = "";
     }
 
+
+    // *************************************************************************************
+    // OUTRO
+    public IEnumerator Outro()
+    {
+        _waveDisplay.text = "YOU WON";
+        yield return new WaitForSecondsRealtime(3f);
+
+        float elapsedTime = 0;
+        float fadeDuration = 5f;
+
+        Color startColor = _fadePanel.color;
+
+        while (_fadePanel.color.a != 1)
+        {
+            float alphaVal = Mathf.Lerp(0, 1, (elapsedTime / fadeDuration));
+            Color newColor = new Color(startColor.r, startColor.g, startColor.b, alphaVal);
+            _fadePanel.color = newColor;
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        yield return new WaitForSecondsRealtime(3f);
+
+        //Application.Quit();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+
     // *************************************************************************************
     // POINTS
 
@@ -66,7 +99,6 @@ public class UIManager : MonoBehaviour
         {
             _lives++;
             UpdateLives(_lives);
-            print("Should restore health");
         }
     }
 
