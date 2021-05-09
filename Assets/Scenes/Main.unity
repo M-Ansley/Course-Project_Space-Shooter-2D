@@ -1248,10 +1248,24 @@ MonoBehaviour:
   - waveNum: 1
     canDodge: 0
     delayBetweenEnemies: 3
-    numOfEnemies: 1
+    numOfEnemies: 5
+    enemyPrefabs:
+    - {fileID: 2637729078673077350, guid: 951852bde8afca642a9ca6ebd279189b, type: 3}
+  - waveNum: 2
+    canDodge: 0
+    delayBetweenEnemies: 2.5
+    numOfEnemies: 10
     enemyPrefabs:
     - {fileID: 2637729078673077350, guid: 37d52f0a8b1c76e49a63b7c19eddcdec, type: 3}
+    - {fileID: 2637729078673077350, guid: 217f4df293dae3049862408f40b3ea83, type: 3}
+  - waveNum: 3
+    canDodge: 0
+    delayBetweenEnemies: 2
+    numOfEnemies: 15
+    enemyPrefabs:
     - {fileID: 2637729078673077350, guid: 37d52f0a8b1c76e49a63b7c19eddcdec, type: 3}
+    - {fileID: 2637729078673077350, guid: 217f4df293dae3049862408f40b3ea83, type: 3}
+    - {fileID: 2637729078673077350, guid: 7f92213d73ad52a44962d147334c7a47, type: 3}
   waveComplete: 0
 --- !u!4 &603346553
 Transform:
